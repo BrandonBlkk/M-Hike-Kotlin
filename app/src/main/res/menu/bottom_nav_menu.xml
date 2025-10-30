@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navHome"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+    <item
+        android:id="@+id/navMyHike"
+        android:icon="@drawable/list_check"
+        android:title="My Hikes"/>
+    <item
+        android:id="@+id/navAddHike"
+        android:icon="@drawable/add_circle"
+        android:title="Add Hike"/>
+    <item
+        android:id="@+id/navMap"
+        android:icon="@drawable/home"
+        android:title="Map"/>
+    <item
+        android:id="@+id/navAbout"
+        android:icon="@drawable/home"
+        android:title="About"/>
+</menu>

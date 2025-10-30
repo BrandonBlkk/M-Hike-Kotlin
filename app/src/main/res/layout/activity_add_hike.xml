@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:elevation="2dp">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add New Hike"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#222222"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Scrollable Form Section -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Hike Name -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hike Name *"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etHikeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter hike name"
+                android:textSize="14sp"
+                android:inputType="textCapWords"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Location -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Location *"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter location"
+                android:textSize="14sp"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Date Picker -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutPickDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvSelectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select date"
+                    android:textColor="#777777"
+                    android:textSize="14sp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    android:tint="#777777" />
+            </LinearLayout>
+
+            <!-- Length -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Length (km) *"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter length in kilometers"
+                android:textSize="14sp"
+                android:inputType="numberDecimal"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Difficulty -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Difficulty Level"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <Spinner
+                android:id="@+id/spDifficulty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Hike Status -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hike Status *"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <Spinner
+                android:id="@+id/spStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Trail Type -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trail Type"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etTrailType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter trail type (optional)"
+                android:textSize="14sp"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Parking Availability -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Parking Availability"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <Spinner
+                android:id="@+id/spParking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_border"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Weather -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weather Forecast"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etWeather"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter weather forecast (optional)"
+                android:textSize="14sp"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Description -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Add extra details about the hike"
+                android:textSize="14sp"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:background="@drawable/edittext_border"
+                android:padding="10dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/btnSubmitHike"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Hike"
+                android:textStyle="bold"
+                android:backgroundTint="@color/button_color"
+                android:textSize="14sp"
+                android:padding="14dp"
+                android:layout_marginBottom="20dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
