@@ -14,6 +14,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var hikeList: MutableList<Hike>
     private lateinit var dbHelper: HikeDbHelper
 
+    // Open Add Hike Screen
+    private fun openAddHikeScreen() {
+        val intent = Intent(this, AddHikeActivity::class.java)
+        startActivity(intent)
+    }
+
+    // Open Hike List Screen
+    private fun openHikeListScreen() {
+        val intent = Intent(this, AddHikeActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -27,6 +39,10 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = hikeAdapter
         }
+
+        // Cards Click Listeners
+        binding.addHikeCard.setOnClickListener { openAddHikeScreen() }
+        binding.recordHikeCard.setOnClickListener { openHikeListScreen() }
 
         // Refresh list
         val refreshLauncher = registerForActivityResult(

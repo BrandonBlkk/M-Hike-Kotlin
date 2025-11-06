@@ -1,7 +1,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="button_color">#1E6A65</color>
+    <color name="main_color">#1E6A65</color>
     <color name="primary_color">#1E88E5</color>
     <color name="primary_dark_color">#1565C0</color>
     <color name="accent_color">#FFC107</color>

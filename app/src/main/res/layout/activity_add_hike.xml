@@ -254,7 +254,7 @@
                 android:layout_height="wrap_content"
                 android:text="Save Hike"
                 android:textStyle="bold"
-                android:backgroundTint="@color/button_color"
+                android:backgroundTint="@color/main_color"
                 android:textSize="14sp"
                 android:padding="14dp"
                 android:layout_marginBottom="20dp" />
