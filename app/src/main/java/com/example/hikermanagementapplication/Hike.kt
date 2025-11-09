@@ -7,9 +7,12 @@ data class Hike(
     val date: String,
     val parking: String,
     val length: Double,
+    val routeType: String? = null,
     val difficulty: String,
-    val status: String,
     val description: String? = null,
-    val trailType: String? = null,
-    val weather: String? = null
+    val notes: String? = null,
+    val weather: String? = null,
+    val isCompleted: Int = 0,
+    val completedDate: String? = null,
+    val createdAt: String? = null
 )

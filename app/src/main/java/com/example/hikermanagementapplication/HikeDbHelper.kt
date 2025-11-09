@@ -10,7 +10,7 @@ class HikeDbHelper(context: Context) :
 
     companion object {
         private const val DATABASE_NAME = "HikerApp.db"
-        private const val DATABASE_VERSION = 2 // ⬆️ Updated version since table changed
+        private const val DATABASE_VERSION = 3
 
         const val TABLE_HIKES = "hikes"
         const val COLUMN_ID = "id"
@@ -19,11 +19,14 @@ class HikeDbHelper(context: Context) :
         const val COLUMN_DATE = "date"
         const val COLUMN_PARKING = "parking"
         const val COLUMN_LENGTH = "length"
+        const val COLUMN_ROUTE_TYPE = "route_type"
         const val COLUMN_DIFFICULTY = "difficulty"
-        const val COLUMN_STATUS = "status" // 🆕 New column
         const val COLUMN_DESCRIPTION = "description"
-        const val COLUMN_TRAIL_TYPE = "trail_type"
+        const val COLUMN_NOTES = "notes"
         const val COLUMN_WEATHER = "weather"
+        const val COLUMN_IS_COMPLETED = "is_completed"
+        const val COLUMN_COMPLETED_DATE = "completed_date"
+        const val COLUMN_CREATED_AT = "created_at"
 
         const val TABLE_OBSERVATIONS = "observations"
         const val COLUMN_OBS_ID = "obs_id"
@@ -42,11 +45,14 @@ class HikeDbHelper(context: Context) :
                 $COLUMN_DATE TEXT NOT NULL,
                 $COLUMN_PARKING TEXT NOT NULL,
                 $COLUMN_LENGTH REAL NOT NULL,
+                $COLUMN_ROUTE_TYPE TEXT,
                 $COLUMN_DIFFICULTY TEXT NOT NULL,
-                $COLUMN_STATUS TEXT NOT NULL,
                 $COLUMN_DESCRIPTION TEXT,
-                $COLUMN_TRAIL_TYPE TEXT,
-                $COLUMN_WEATHER TEXT
+                $COLUMN_NOTES TEXT,
+                $COLUMN_WEATHER TEXT,
+                $COLUMN_IS_COMPLETED INTEGER DEFAULT 0,
+                $COLUMN_COMPLETED_DATE TEXT,
+                $COLUMN_CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         """.trimIndent()
 
@@ -71,7 +77,7 @@ class HikeDbHelper(context: Context) :
         onCreate(db)
     }
 
-    fun insertHike(hike: Hike): Long {
+    fun insertHikeWithExtras(hike: Hike, notes: String?, isCompleted: Int, completedDate: String?): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_NAME, hike.name)
@@ -79,11 +85,13 @@ class HikeDbHelper(context: Context) :
             put(COLUMN_DATE, hike.date)
             put(COLUMN_PARKING, hike.parking)
             put(COLUMN_LENGTH, hike.length)
+            put(COLUMN_ROUTE_TYPE, hike.routeType)
             put(COLUMN_DIFFICULTY, hike.difficulty)
-            put(COLUMN_STATUS, hike.status) // 🆕 Added status
             put(COLUMN_DESCRIPTION, hike.description)
-            put(COLUMN_TRAIL_TYPE, hike.trailType)
+            put(COLUMN_NOTES, notes)
             put(COLUMN_WEATHER, hike.weather)
+            put(COLUMN_IS_COMPLETED, isCompleted)
+            put(COLUMN_COMPLETED_DATE, completedDate)
         }
         return db.insert(TABLE_HIKES, null, values)
     }
@@ -106,11 +114,14 @@ class HikeDbHelper(context: Context) :
                         date = it.getString(it.getColumnIndexOrThrow(COLUMN_DATE)),
                         parking = it.getString(it.getColumnIndexOrThrow(COLUMN_PARKING)),
                         length = it.getDouble(it.getColumnIndexOrThrow(COLUMN_LENGTH)),
+                        routeType = it.getString(it.getColumnIndexOrThrow(COLUMN_ROUTE_TYPE)),
                         difficulty = it.getString(it.getColumnIndexOrThrow(COLUMN_DIFFICULTY)),
-                        status = it.getString(it.getColumnIndexOrThrow(COLUMN_STATUS)), // 🆕
                         description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION)),
-                        trailType = it.getString(it.getColumnIndexOrThrow(COLUMN_TRAIL_TYPE)),
-                        weather = it.getString(it.getColumnIndexOrThrow(COLUMN_WEATHER))
+                        notes = it.getString(it.getColumnIndexOrThrow(COLUMN_NOTES)),
+                        weather = it.getString(it.getColumnIndexOrThrow(COLUMN_WEATHER)),
+                        isCompleted = it.getInt(it.getColumnIndexOrThrow(COLUMN_IS_COMPLETED)),
+                        completedDate = it.getString(it.getColumnIndexOrThrow(COLUMN_COMPLETED_DATE)),
+                        createdAt = it.getString(it.getColumnIndexOrThrow(COLUMN_CREATED_AT))
                     )
                     hikes.add(hike)
                 } while (it.moveToNext())

@@ -1,10 +1,13 @@
 package com.example.hikermanagementapplication
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.hikermanagementapplication.databinding.ActivityAddHikeBinding
 import java.util.Calendar
 
@@ -12,6 +15,10 @@ class AddHikeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddHikeBinding
     private lateinit var dbHelper: HikeDbHelper
+
+    private var isCompleted = 0
+    private var completedDate: String? = null
+    private var currentHikeId: Long = -1 // Track the current hike ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,92 +33,352 @@ class AddHikeActivity : AppCompatActivity() {
         }
 
         // Parking Spinner
-        val parkingOptions = listOf("Select parking availability", "Available", "Not Available", "Limited")
+        val parkingOptions = listOf("Select parking option", "Yes", "No")
         val parkingAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, parkingOptions)
         parkingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spParking.adapter = parkingAdapter
 
         // Difficulty Spinner
-        val difficultyOptions = listOf("Select difficulty level", "Easy", "Moderate", "Hard", "Extreme")
+        val difficultyOptions = listOf("Select difficulty level", "Easy", "Moderate", "Hard")
         val difficultyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, difficultyOptions)
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spDifficulty.adapter = difficultyAdapter
 
-        // Hike Status Spinner
-        val statusOptions = listOf("Select hike status", "Planned", "Ongoing", "Completed", "Cancelled")
-        val statusAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, statusOptions)
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spStatus.adapter = statusAdapter
+        // Route Type Spinner
+        val routeTypeOptions = listOf("Select route type", "Loop", "Out & Back", "Point to Point", "Lollipop")
+        val routeTypeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, routeTypeOptions)
+        routeTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spRouteType.adapter = routeTypeAdapter
 
-        // Date Picker
+        // Set up text change listeners
+        setupTextChangeListeners()
+
+        // Set up spinner change listeners
+        setupSpinnerChangeListeners()
+
+        // Date Picker for planned hike
         binding.layoutPickDate.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            showDatePicker(binding.tvSelectedDate, "Select hike date")
+        }
 
-            val datePicker = DatePickerDialog(this,
-                { _, selectedYear, selectedMonth, selectedDay ->
-                    val dateText = "${selectedDay}/${selectedMonth + 1}/${selectedYear}"
-                    binding.tvSelectedDate.text = dateText
-                    binding.tvSelectedDate.setTextColor(getColor(android.R.color.black))
-                }, year, month, day
-            )
-            datePicker.show()
+        // Completed Date Picker
+        binding.layoutPickCompletedDate.setOnClickListener {
+            showDatePicker(binding.tvCompletedDate, "Select completed date")
+        }
+
+        // Hike Completed Toggle
+        binding.switchHikeCompleted.setOnCheckedChangeListener { _, isChecked ->
+            toggleCompletedStatus(isChecked)
+        }
+
+        // Add Observation Button
+        binding.btnAddObservation.setOnClickListener {
+            addObservationForCurrentHike()
         }
 
         // Submit Button
         binding.btnSubmitHike.setOnClickListener {
-            val hikeName = binding.etHikeName.text.toString().trim()
-            val location = binding.etLocation.text.toString().trim()
-            val parking = binding.spParking.selectedItem.toString()
-            val difficulty = binding.spDifficulty.selectedItem.toString()
-            val status = binding.spStatus.selectedItem.toString()
-            val lengthStr = binding.etLength.text.toString().trim()
-            val description = binding.etDescription.text.toString().trim()
-            val weather = binding.etWeather.text.toString().trim()
-            val trailType = binding.etTrailType.text.toString().trim()
-            val date = binding.tvSelectedDate.text.toString().trim()
+            submitHike()
+        }
+    }
 
-            // Validation
-            if (hikeName.isEmpty() || location.isEmpty() || date.isEmpty() ||
-                parking == "Select parking availability" ||
-                difficulty == "Select difficulty level" ||
-                status == "Select hike status" ||
-                lengthStr.isEmpty()
-            ) {
-                Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+    // Add Observation Button
+    private fun addObservationForCurrentHike() {
+        if (currentHikeId == -1L) {
+            Toast.makeText(this, "Please save the hike first before adding observations", Toast.LENGTH_LONG).show()
+        } else {
+            // Navigate to AddObservationActivity with the current hike ID
+            val intent = Intent(this, AddObservationActivity::class.java).apply {
+                putExtra("HIKE_ID", currentHikeId)
+                putExtra("HIKE_NAME", binding.etHikeName.text.toString().trim())
             }
+            startActivity(intent)
+        }
+    }
 
-            val length = lengthStr.toDoubleOrNull()
-            if (length == null) {
-                Toast.makeText(this, "Length must be a valid number", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+    private fun setupTextChangeListeners() {
+        // Hike Name text change listener
+        binding.etHikeName.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (s?.toString()?.isNotEmpty() == true) {
+                    binding.tvHikeNameError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.etHikeName, true)
+                }
             }
+        })
 
-            // Create Hike object
-            val hike = Hike(
-                name = hikeName,
-                location = location,
-                date = date,
-                parking = parking,
-                length = length,
-                difficulty = difficulty,
-                status = status,
-                description = description.ifEmpty { null },
-                trailType = trailType.ifEmpty { null },
-                weather = weather.ifEmpty { null }
-            )
-
-            val id = dbHelper.insertHike(hike)
-
-            if (id > 0) {
-                Toast.makeText(this, "Hike saved successfully", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                Toast.makeText(this, "Failed to save hike", Toast.LENGTH_SHORT).show()
+        // Location text change listener
+        binding.etLocation.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (s?.toString()?.isNotEmpty() == true) {
+                    binding.tvLocationError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.etLocation, true)
+                }
             }
+        })
+
+        // Length text change listener
+        binding.etLength.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val text = s?.toString()?.trim()
+                if (text?.isNotEmpty() == true) {
+                    val length = text.toDoubleOrNull()
+                    if (length != null && length > 0) {
+                        binding.tvLengthError.visibility = android.view.View.GONE
+                        updateInputMargin(binding.etLength, true)
+                    }
+                }
+            }
+        })
+
+        // Weather text change listener
+        binding.etWeather.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
+        // Description text change listener
+        binding.etDescription.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
+        // Notes text change listener
+        binding.etNotes.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+    }
+
+    private fun setupSpinnerChangeListeners() {
+        // Parking spinner change listener
+        binding.spParking.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                if (selectedItem != "Select parking option") {
+                    binding.tvParkingError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.spParking, true)
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+
+        // Difficulty spinner change listener
+        binding.spDifficulty.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                if (selectedItem != "Select difficulty level") {
+                    binding.tvDifficultyError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.spDifficulty, true)
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+
+        // Route Type spinner change listener (optional field)
+        binding.spRouteType.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {}
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+    }
+
+    private fun updateInputMargin(view: android.view.View, hasError: Boolean) {
+        val layoutParams = view.layoutParams as android.widget.LinearLayout.LayoutParams
+        if (hasError) {
+            layoutParams.bottomMargin = 4.dpToPx()
+        } else {
+            layoutParams.bottomMargin = 16.dpToPx()
+        }
+        view.layoutParams = layoutParams
+    }
+
+    private fun Int.dpToPx(): Int {
+        val scale = resources.displayMetrics.density
+        return (this * scale + 0.5f).toInt()
+    }
+
+    private fun toggleCompletedStatus(isCompleted: Boolean) {
+        this.isCompleted = if (isCompleted) 1 else 0
+
+        // Update completion status text
+        val statusText = if (isCompleted) "Marked as completed" else "Mark as planned"
+        binding.tvCompletionStatus.text = statusText
+
+        // Update switch colors
+        if (isCompleted) {
+            binding.switchHikeCompleted.trackTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#1E6A65"))
+            binding.switchHikeCompleted.thumbTintList = android.content.res.ColorStateList.valueOf(Color.WHITE)
+        } else {
+            binding.switchHikeCompleted.trackTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#f0f0f0"))
+            binding.switchHikeCompleted.thumbTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#f4f3f4"))
+        }
+
+        // Show/hide completed date section
+        binding.layoutCompletedDateContainer.isVisible = isCompleted
+
+        // If marked as completed and no completed date is set, set it to current date
+        if (isCompleted && completedDate == null) {
+            val calendar = Calendar.getInstance()
+            val dateText = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
+            binding.tvCompletedDate.text = dateText
+            completedDate = dateText
+            binding.tvCompletedDate.setTextColor(Color.BLACK)
+        }
+
+        // Clear completed date error when toggle is changed
+        binding.tvCompletedDateError.visibility = android.view.View.GONE
+    }
+
+    private fun showDatePicker(textView: android.widget.TextView, title: String) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePicker = DatePickerDialog(this,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val dateText = "${selectedDay}/${selectedMonth + 1}/${selectedYear}"
+                textView.text = dateText
+                textView.setTextColor(Color.BLACK)
+
+                // Store the completed date if this is the completed date picker
+                if (textView == binding.tvCompletedDate) {
+                    completedDate = dateText
+                    // Clear error when date is selected
+                    binding.tvCompletedDateError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.layoutPickCompletedDate, true)
+                } else if (textView == binding.tvSelectedDate) {
+                    // Clear error when hike date is selected
+                    binding.tvDateError.visibility = android.view.View.GONE
+                    updateInputMargin(binding.layoutPickDate, true)
+                }
+            }, year, month, day
+        )
+        datePicker.setTitle(title)
+        datePicker.show()
+    }
+
+    private fun submitHike() {
+        val hikeName = binding.etHikeName.text.toString().trim()
+        val location = binding.etLocation.text.toString().trim()
+        val parking = binding.spParking.selectedItem.toString()
+        val difficulty = binding.spDifficulty.selectedItem.toString()
+        val routeType = binding.spRouteType.selectedItem.toString()
+        val lengthStr = binding.etLength.text.toString().trim()
+        val description = binding.etDescription.text.toString().trim()
+        val weather = binding.etWeather.text.toString().trim()
+        val date = binding.tvSelectedDate.text.toString().trim()
+        val notes = binding.etNotes.text.toString().trim()
+
+        var hasError = false
+
+        // Clear previous errors and reset margins
+        binding.etHikeName.error = null
+        binding.etLocation.error = null
+        binding.etLength.error = null
+        binding.tvSelectedDate.error = null
+        binding.tvHikeNameError.visibility = android.view.View.GONE
+        binding.tvLocationError.visibility = android.view.View.GONE
+        binding.tvDateError.visibility = android.view.View.GONE
+        binding.tvParkingError.visibility = android.view.View.GONE
+        binding.tvLengthError.visibility = android.view.View.GONE
+        binding.tvDifficultyError.visibility = android.view.View.GONE
+        binding.tvCompletedDateError.visibility = android.view.View.GONE
+
+        // Reset all input margins to 16dp
+        updateInputMargin(binding.etHikeName, false)
+        updateInputMargin(binding.etLocation, false)
+        updateInputMargin(binding.etLength, false)
+        updateInputMargin(binding.spParking, false)
+        updateInputMargin(binding.spDifficulty, false)
+        updateInputMargin(binding.layoutPickDate, false)
+        updateInputMargin(binding.layoutPickCompletedDate, false)
+
+        // Validations
+        if (hikeName.isEmpty()) {
+            binding.tvHikeNameError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.etHikeName, true)
+            hasError = true
+        }
+        if (location.isEmpty()) {
+            binding.tvLocationError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.etLocation, true)
+            hasError = true
+        }
+        if (date == "Select date" || date.isEmpty()) {
+            binding.tvDateError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.layoutPickDate, true)
+            hasError = true
+        }
+        if (parking == "Select parking option") {
+            binding.tvParkingError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.spParking, true)
+            hasError = true
+        }
+        if (lengthStr.isEmpty()) {
+            binding.tvLengthError.visibility = android.view.View.VISIBLE
+            binding.tvLengthError.text = "Length is required"
+            updateInputMargin(binding.etLength, true)
+            hasError = true
+        } else if (lengthStr.toDoubleOrNull() == null || lengthStr.toDouble() <= 0) {
+            binding.tvLengthError.visibility = android.view.View.VISIBLE
+            binding.tvLengthError.text = "Length must be a valid number"
+            updateInputMargin(binding.etLength, true)
+            hasError = true
+        }
+        if (difficulty == "Select difficulty level") {
+            binding.tvDifficultyError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.spDifficulty, true)
+            hasError = true
+        }
+        if (isCompleted == 1 && (completedDate == null || binding.tvCompletedDate.text == "Select completed date")) {
+            binding.tvCompletedDateError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.layoutPickCompletedDate, true)
+            hasError = true
+        }
+
+        if (hasError) return
+
+        val length = lengthStr.toDouble()
+
+        // Create Hike object
+        val hike = Hike(
+            name = hikeName,
+            location = location,
+            date = date,
+            parking = parking,
+            length = length,
+            routeType = if (routeType != "Select route type") routeType else "",
+            difficulty = difficulty,
+            description = description.ifEmpty { null },
+            notes = notes.ifEmpty { null },
+            weather = weather.ifEmpty { null },
+            isCompleted = isCompleted,
+            completedDate = completedDate,
+            createdAt = null
+        )
+
+        val id = dbHelper.insertHikeWithExtras(
+            hike = hike,
+            notes = hike.notes,
+            isCompleted = isCompleted,
+            completedDate = completedDate
+        )
+
+        if (id > 0) {
+            currentHikeId = id // Store the hike ID for observation reference
+            Toast.makeText(this, "Hike added successfully! You can now add observations.", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, "Failed to add hike", Toast.LENGTH_SHORT).show()
         }
     }
 }
