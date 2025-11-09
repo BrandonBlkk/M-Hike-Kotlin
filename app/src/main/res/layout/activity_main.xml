@@ -595,40 +595,71 @@
 
             <!-- Recent Hikes Section -->
             <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:paddingTop="0dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Recent Hikes"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-                <!-- RecyclerView for dynamic recent hikes -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Recent Hikes"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/viewAllButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View All"
+                        android:textSize="14sp"
+                        android:textColor="@color/main_color"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+
+                <!-- RecyclerView for dynamic recent hikes (Horizontal Scroll) -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recentHikesRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
-                    android:scrollbars="vertical" />
+                    android:paddingEnd="16dp"
+                    android:scrollbars="horizontal"
+                    android:orientation="horizontal" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
+    <!-- Bottom Navigation Tab Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:menu="@menu/bottom_nav_menu"
         android:background="@color/white"
         app:elevation="0dp"
-        app:itemRippleColor="@color/white"
-        app:itemBackground="@color/white"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemBackground="@android:color/transparent"
         app:itemIconTint="@color/bottom_nav_icon_color"
-        app:itemTextColor="@color/bottom_nav_icon_color"/>
+        app:itemTextColor="@color/bottom_nav_icon_color"
+        app:labelVisibilityMode="labeled"
+        android:theme="@style/Theme.MaterialComponents.Light" />
 </LinearLayout>

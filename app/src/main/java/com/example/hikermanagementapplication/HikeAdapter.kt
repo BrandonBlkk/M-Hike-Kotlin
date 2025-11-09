@@ -20,6 +20,8 @@ class HikeAdapter(
     inner class HikeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val hikeName: TextView = itemView.findViewById(R.id.hikeName)
         val hikeLocation: TextView = itemView.findViewById(R.id.hikeLocation)
+        val hikeDistance: TextView = itemView.findViewById(R.id.hikeDistance)
+        val hikeParking: TextView = itemView.findViewById(R.id.hikeParking)
         val hikeDifficulty: TextView = itemView.findViewById(R.id.hikeDifficulty)
         val hikeDate: TextView = itemView.findViewById(R.id.hikeDate)
         val viewDetailsIcon: ImageView = itemView.findViewById(R.id.viewDetailsIcon)
@@ -28,7 +30,7 @@ class HikeAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HikeViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_hike, parent, false)
+            .inflate(R.layout.recent_hike, parent, false)
         return HikeViewHolder(view)
     }
 
@@ -37,7 +39,10 @@ class HikeAdapter(
 
         // Display main info
         holder.hikeName.text = hike.name
-        holder.hikeLocation.text = "${hike.location} • ${hike.length} km"
+        holder.hikeLocation.text = "${hike.location}"
+        holder.hikeDistance.text = "${hike.length} km"
+        holder.hikeParking.text = hike.parking
+
         holder.hikeDifficulty.text = hike.difficulty
         holder.hikeDate.text = hike.date
 
@@ -80,6 +85,7 @@ class HikeAdapter(
                 putExtra("hikeDistance", hike.length)
                 putExtra("hikeLocation", hike.location)
                 putExtra("hikeDifficulty", hike.difficulty)
+                putExtra("hikeParking", hike.parking)
                 putExtra("hikeDescription", hike.description)
                 putExtra("hikeNotes", hike.notes)
                 putExtra("hikeWeather", hike.weather)

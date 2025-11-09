@@ -27,6 +27,11 @@
             android:name=".AddHikeActivity"
             android:exported="true" />
 
+        <!-- Hike List Activity -->
+        <activity
+            android:name=".HikeListActivity"
+            android:exported="false" />
+
         <!-- Add Observation Activity -->
         <activity
             android:name=".AddObservationActivity"

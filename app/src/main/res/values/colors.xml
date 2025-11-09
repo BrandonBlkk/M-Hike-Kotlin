@@ -2,6 +2,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_color">#1E6A65</color>
+    <color name="gray">#666</color>
+    <color name="pale_gray">#878787</color>
     <color name="primary_color">#1E88E5</color>
     <color name="primary_dark_color">#1565C0</color>
     <color name="accent_color">#FFC107</color>
@@ -12,5 +14,4 @@
     <color name="purple_500">#9C27B0</color>
     <color name="gray_500">#BDBDBD</color>
     <color name="background_color">#FFFFFF</color>
-    <color name="bottom_nav_icon_color">#1E6A65</color>
 </resources>
