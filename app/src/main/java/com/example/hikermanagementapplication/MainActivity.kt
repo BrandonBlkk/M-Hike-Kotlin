@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hikermanagementapplication.databinding.ActivityMainBinding
+import com.example.hikermanagementapplication.WeatherForecastActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                     refreshLauncher.launch(intent)
                     true
                 }
-                R.id.navAbout -> {
-                    val intent = Intent(this, AddHikeActivity::class.java)
+                R.id.navWeather -> {
+                    val intent = Intent(this, WeatherForecastActivity::class.java)
                     refreshLauncher.launch(intent)
                     true
                 }

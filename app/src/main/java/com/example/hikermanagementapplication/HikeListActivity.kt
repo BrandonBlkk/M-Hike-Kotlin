@@ -106,8 +106,8 @@ class HikeListActivity : AppCompatActivity() {
                     refreshLauncher.launch(intent)
                     true
                 }
-                R.id.navAbout -> {
-                    val intent = Intent(this, AddHikeActivity::class.java)
+                R.id.navWeather -> {
+                    val intent = Intent(this, WeatherForecastActivity::class.java)
                     refreshLauncher.launch(intent)
                     true
                 }

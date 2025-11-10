@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hourlyCard"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="7dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/weather_light_blue"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="15dp"
+        android:gravity="center"
+        android:minWidth="70dp">
+
+        <TextView
+            android:id="@+id/hourlyTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Now"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:alpha="0.9"
+            android:layout_marginBottom="8dp" />
+
+        <ImageView
+            android:id="@+id/hourlyWeatherIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/sun_cloudy"
+            android:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/hourlyTempText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="24°"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

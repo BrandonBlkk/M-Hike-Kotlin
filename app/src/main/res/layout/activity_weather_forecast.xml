@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/weather_blue">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        android:paddingBottom="20dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="14:30"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="normal"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New York, US"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wed May 26, 14:30"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:alpha="0.9" />
+
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Loading State -->
+                <LinearLayout
+                    android:id="@+id/loadingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminateTint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading weather data..."
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:layout_marginTop="16dp" />
+
+                </LinearLayout>
+
+                <!-- Content Container -->
+                <LinearLayout
+                    android:id="@+id/contentContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <!-- Current Weather Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="20dp"
+                        android:paddingVertical="30dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="30dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/currentTempText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="24°"
+                                    android:textColor="@color/white"
+                                    android:textSize="72sp"
+                                    android:textStyle="normal"
+                                    android:lineHeight="80sp" />
+
+                                <TextView
+                                    android:id="@+id/feelsLikeText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Feels like 26°"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp"
+                                    android:alpha="0.9"
+                                    android:layout_marginTop="4dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/weatherIcon"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:src="@drawable/sun_cloudy"
+                                    android:tint="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/weatherDescriptionText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Clear sky"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp"
+                                    android:alpha="0.9"
+                                    android:layout_marginTop="8dp"
+                                    android:textAllCaps="true" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Weather Details -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center"
+                            android:weightSum="3">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/humidity_line"
+                                    android:tint="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/humidityText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="65%"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginTop="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Humidity"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:alpha="0.8"
+                                    android:layout_marginTop="6dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/pressure_line"
+                                    android:tint="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/pressureText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1013"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginTop="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pressure"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:alpha="0.8"
+                                    android:layout_marginTop="6dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/windy_line"
+                                    android:tint="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/windText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="15"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginTop="4dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Wind km/h"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:alpha="0.8"
+                                    android:layout_marginTop="6dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Hourly Forecast Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Today"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="15dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/hourlyRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="15dp" />
+
+                    </LinearLayout>
+
+                    <!-- Daily Forecast Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6-Day Forecast"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="15dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/dailyRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:padding="16dp" />
+
+                    </LinearLayout>
+
+                    <!-- Weather Tips Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="40dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Weather Tips"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="15dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/tipsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:padding="20dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Error State -->
+                <LinearLayout
+                    android:id="@+id/errorContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="40dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/sun_cloudy"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Unable to Load Weather"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/errorText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Error message here"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:alpha="0.9"
+                        android:textAlignment="center"
+                        android:lineHeight="22sp"
+                        android:layout_marginBottom="24dp" />
+
+                    <Button
+                        android:id="@+id/retryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Try Again"
+                        android:textColor="@color/weather_blue"
+                        android:backgroundTint="@color/white"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="12dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Bottom Navigation Tab Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:menu="@menu/bottom_nav_menu"
+        android:background="@color/white"
+        app:elevation="0dp"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemBackground="@android:color/transparent"
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemTextColor="@color/bottom_nav_icon_color"
+        app:labelVisibilityMode="labeled"
+        android:theme="@style/Theme.MaterialComponents.Light" />
+</LinearLayout>
