@@ -20,6 +20,9 @@ class AddHikeActivity : AppCompatActivity() {
     private var completedDate: String? = null
     private var currentHikeId: Long = -1 // Track the current hike ID
 
+    // Store the current hike data for confirmation
+    private var currentHikeData: Hike? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddHikeBinding.inflate(layoutInflater)
@@ -78,8 +81,210 @@ class AddHikeActivity : AppCompatActivity() {
 
         // Submit Button
         binding.btnSubmitHike.setOnClickListener {
-            submitHike()
+            validateAndShowConfirmation()
         }
+    }
+
+    private fun validateAndShowConfirmation() {
+        if (validateForm()) {
+            showConfirmationDialog()
+        }
+    }
+
+    private fun validateForm(): Boolean {
+        val hikeName = binding.etHikeName.text.toString().trim()
+        val location = binding.etLocation.text.toString().trim()
+        val parking = binding.spParking.selectedItem.toString()
+        val difficulty = binding.spDifficulty.selectedItem.toString()
+        val routeType = binding.spRouteType.selectedItem.toString()
+        val lengthStr = binding.etLength.text.toString().trim()
+        val description = binding.etDescription.text.toString().trim()
+        val weather = binding.etWeather.text.toString().trim()
+        val date = binding.tvSelectedDate.text.toString().trim()
+        val notes = binding.etNotes.text.toString().trim()
+
+        var hasError = false
+
+        // Clear previous errors and reset margins
+        binding.etHikeName.error = null
+        binding.etLocation.error = null
+        binding.etLength.error = null
+        binding.tvSelectedDate.error = null
+        binding.tvHikeNameError.visibility = android.view.View.GONE
+        binding.tvLocationError.visibility = android.view.View.GONE
+        binding.tvDateError.visibility = android.view.View.GONE
+        binding.tvParkingError.visibility = android.view.View.GONE
+        binding.tvLengthError.visibility = android.view.View.GONE
+        binding.tvDifficultyError.visibility = android.view.View.GONE
+        binding.tvCompletedDateError.visibility = android.view.View.GONE
+
+        // Reset all input margins to 16dp
+        updateInputMargin(binding.etHikeName, false)
+        updateInputMargin(binding.etLocation, false)
+        updateInputMargin(binding.etLength, false)
+        updateInputMargin(binding.spParking, false)
+        updateInputMargin(binding.spDifficulty, false)
+        updateInputMargin(binding.layoutPickDate, false)
+        updateInputMargin(binding.layoutPickCompletedDate, false)
+
+        // Validations
+        if (hikeName.isEmpty()) {
+            binding.tvHikeNameError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.etHikeName, true)
+            hasError = true
+        }
+        if (location.isEmpty()) {
+            binding.tvLocationError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.etLocation, true)
+            hasError = true
+        }
+        if (date == "Select date" || date.isEmpty()) {
+            binding.tvDateError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.layoutPickDate, true)
+            hasError = true
+        }
+        if (parking == "Select parking option") {
+            binding.tvParkingError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.spParking, true)
+            hasError = true
+        }
+        if (lengthStr.isEmpty()) {
+            binding.tvLengthError.visibility = android.view.View.VISIBLE
+            binding.tvLengthError.text = "Length is required"
+            updateInputMargin(binding.etLength, true)
+            hasError = true
+        } else if (lengthStr.toDoubleOrNull() == null || lengthStr.toDouble() <= 0) {
+            binding.tvLengthError.visibility = android.view.View.VISIBLE
+            binding.tvLengthError.text = "Length must be a valid number"
+            updateInputMargin(binding.etLength, true)
+            hasError = true
+        }
+        if (difficulty == "Select difficulty level") {
+            binding.tvDifficultyError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.spDifficulty, true)
+            hasError = true
+        }
+        if (isCompleted == 1 && (completedDate == null || binding.tvCompletedDate.text == "Select completed date")) {
+            binding.tvCompletedDateError.visibility = android.view.View.VISIBLE
+            updateInputMargin(binding.layoutPickCompletedDate, true)
+            hasError = true
+        }
+
+        if (hasError) return false
+
+        // Store the current hike data for confirmation
+        val length = lengthStr.toDouble()
+        currentHikeData = Hike(
+            name = hikeName,
+            location = location,
+            date = date,
+            parking = parking,
+            length = length,
+            routeType = if (routeType != "Select route type") routeType else "",
+            difficulty = difficulty,
+            description = description.ifEmpty { null },
+            notes = notes.ifEmpty { null },
+            weather = weather.ifEmpty { null },
+            isCompleted = isCompleted,
+            completedDate = completedDate,
+            createdAt = null
+        )
+
+        return true
+    }
+
+    private fun showConfirmationDialog() {
+        val hike = currentHikeData ?: return
+
+        val confirmationMessage = """
+        Please confirm your hike details:
+        
+        Hike Name: ${hike.name}
+        Location: ${hike.location}
+        Date: ${hike.date}
+        Parking: ${hike.parking}
+        Length: ${hike.length} km
+        Difficulty: ${hike.difficulty}
+        Route Type: ${hike.routeType ?: "Not specified"}
+        Status: ${if (hike.isCompleted == 1) "Completed" else "Planned"}
+        ${if (hike.isCompleted == 1) "Completed Date: ${hike.completedDate}" else ""}
+        ${if (!hike.weather.isNullOrEmpty()) "Weather: ${hike.weather}" else ""}
+        ${if (!hike.description.isNullOrEmpty()) "Description: ${hike.description}" else ""}
+        ${if (!hike.notes.isNullOrEmpty()) "Notes: ${hike.notes}" else ""}
+        
+        Do you want to save this hike?
+    """.trimIndent()
+
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle("Confirm Hike Details")
+            .setMessage(confirmationMessage)
+            .setPositiveButton("Confirm & Save") { dialog, which ->
+                saveHikeToDatabase()
+            }
+            .setNegativeButton("Go Back & Edit") { dialog, which ->
+                // User can go back and edit the form
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .create()
+
+        dialog.setOnShowListener {
+            // Blue
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLUE)
+
+            // Red
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.RED)
+        }
+
+        dialog.show()
+    }
+
+    private fun saveHikeToDatabase() {
+        val hike = currentHikeData ?: return
+
+        val id = dbHelper.insertHikeWithExtras(
+            hike = hike,
+            notes = hike.notes,
+            isCompleted = hike.isCompleted,
+            completedDate = hike.completedDate
+        )
+
+        if (id > 0) {
+            currentHikeId = id // Store the hike ID for observation reference
+            Toast.makeText(this, "Hike added successfully! You can now add observations.", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, "Failed to add hike", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun clearForm() {
+        // Clear all form fields
+        binding.etHikeName.text.clear()
+        binding.etLocation.text.clear()
+        binding.etLength.text.clear()
+        binding.etDescription.text.clear()
+        binding.etWeather.text.clear()
+        binding.etNotes.text.clear()
+
+        // Reset spinners to default positions
+        binding.spParking.setSelection(0)
+        binding.spDifficulty.setSelection(0)
+        binding.spRouteType.setSelection(0)
+
+        // Reset date pickers
+        binding.tvSelectedDate.text = "Select date"
+        binding.tvSelectedDate.setTextColor(Color.parseColor("#777777"))
+        binding.tvCompletedDate.text = "Select completed date"
+        binding.tvCompletedDate.setTextColor(Color.parseColor("#777777"))
+
+        // Reset completion status
+        binding.switchHikeCompleted.isChecked = false
+        binding.layoutCompletedDateContainer.isVisible = false
+
+        // Clear stored data
+        currentHikeData = null
+        completedDate = null
+        isCompleted = 0
     }
 
     // Add Observation Button
@@ -265,120 +470,5 @@ class AddHikeActivity : AppCompatActivity() {
         )
         datePicker.setTitle(title)
         datePicker.show()
-    }
-
-    private fun submitHike() {
-        val hikeName = binding.etHikeName.text.toString().trim()
-        val location = binding.etLocation.text.toString().trim()
-        val parking = binding.spParking.selectedItem.toString()
-        val difficulty = binding.spDifficulty.selectedItem.toString()
-        val routeType = binding.spRouteType.selectedItem.toString()
-        val lengthStr = binding.etLength.text.toString().trim()
-        val description = binding.etDescription.text.toString().trim()
-        val weather = binding.etWeather.text.toString().trim()
-        val date = binding.tvSelectedDate.text.toString().trim()
-        val notes = binding.etNotes.text.toString().trim()
-
-        var hasError = false
-
-        // Clear previous errors and reset margins
-        binding.etHikeName.error = null
-        binding.etLocation.error = null
-        binding.etLength.error = null
-        binding.tvSelectedDate.error = null
-        binding.tvHikeNameError.visibility = android.view.View.GONE
-        binding.tvLocationError.visibility = android.view.View.GONE
-        binding.tvDateError.visibility = android.view.View.GONE
-        binding.tvParkingError.visibility = android.view.View.GONE
-        binding.tvLengthError.visibility = android.view.View.GONE
-        binding.tvDifficultyError.visibility = android.view.View.GONE
-        binding.tvCompletedDateError.visibility = android.view.View.GONE
-
-        // Reset all input margins to 16dp
-        updateInputMargin(binding.etHikeName, false)
-        updateInputMargin(binding.etLocation, false)
-        updateInputMargin(binding.etLength, false)
-        updateInputMargin(binding.spParking, false)
-        updateInputMargin(binding.spDifficulty, false)
-        updateInputMargin(binding.layoutPickDate, false)
-        updateInputMargin(binding.layoutPickCompletedDate, false)
-
-        // Validations
-        if (hikeName.isEmpty()) {
-            binding.tvHikeNameError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.etHikeName, true)
-            hasError = true
-        }
-        if (location.isEmpty()) {
-            binding.tvLocationError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.etLocation, true)
-            hasError = true
-        }
-        if (date == "Select date" || date.isEmpty()) {
-            binding.tvDateError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.layoutPickDate, true)
-            hasError = true
-        }
-        if (parking == "Select parking option") {
-            binding.tvParkingError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.spParking, true)
-            hasError = true
-        }
-        if (lengthStr.isEmpty()) {
-            binding.tvLengthError.visibility = android.view.View.VISIBLE
-            binding.tvLengthError.text = "Length is required"
-            updateInputMargin(binding.etLength, true)
-            hasError = true
-        } else if (lengthStr.toDoubleOrNull() == null || lengthStr.toDouble() <= 0) {
-            binding.tvLengthError.visibility = android.view.View.VISIBLE
-            binding.tvLengthError.text = "Length must be a valid number"
-            updateInputMargin(binding.etLength, true)
-            hasError = true
-        }
-        if (difficulty == "Select difficulty level") {
-            binding.tvDifficultyError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.spDifficulty, true)
-            hasError = true
-        }
-        if (isCompleted == 1 && (completedDate == null || binding.tvCompletedDate.text == "Select completed date")) {
-            binding.tvCompletedDateError.visibility = android.view.View.VISIBLE
-            updateInputMargin(binding.layoutPickCompletedDate, true)
-            hasError = true
-        }
-
-        if (hasError) return
-
-        val length = lengthStr.toDouble()
-
-        // Create Hike object
-        val hike = Hike(
-            name = hikeName,
-            location = location,
-            date = date,
-            parking = parking,
-            length = length,
-            routeType = if (routeType != "Select route type") routeType else "",
-            difficulty = difficulty,
-            description = description.ifEmpty { null },
-            notes = notes.ifEmpty { null },
-            weather = weather.ifEmpty { null },
-            isCompleted = isCompleted,
-            completedDate = completedDate,
-            createdAt = null
-        )
-
-        val id = dbHelper.insertHikeWithExtras(
-            hike = hike,
-            notes = hike.notes,
-            isCompleted = isCompleted,
-            completedDate = completedDate
-        )
-
-        if (id > 0) {
-            currentHikeId = id // Store the hike ID for observation reference
-            Toast.makeText(this, "Hike added successfully! You can now add observations.", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, "Failed to add hike", Toast.LENGTH_SHORT).show()
-        }
     }
 }

@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    // Open Weather Screen
+    private fun openWeatherScreen() {
+        val intent = Intent(this, WeatherForecastActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -44,12 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         // Cards Click Listeners
         binding.addHikeCard.setOnClickListener { openAddHikeScreen() }
-        binding.recordHikeCard.setOnClickListener { openHikeListScreen() }
+        binding.recordHikeCard.setOnClickListener { openAddHikeScreen() }
+
         binding.myHikeCard.setOnClickListener { openHikeListScreen() }
         binding.trackProgressCard.setOnClickListener { openHikeListScreen() }
-
-        // View All Button
         binding.viewAllButton.setOnClickListener { openHikeListScreen() }
+
+        binding.weatherInfoCard.setOnClickListener { openWeatherScreen() }
+        binding.weatherCard.setOnClickListener { openWeatherScreen() }
 
         // Refresh list
         val refreshLauncher = registerForActivityResult(
