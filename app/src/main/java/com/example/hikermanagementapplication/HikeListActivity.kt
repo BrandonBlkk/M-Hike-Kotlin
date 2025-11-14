@@ -1,6 +1,7 @@
 package com.example.hikermanagementapplication
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -19,6 +20,13 @@ class HikeListActivity : AppCompatActivity() {
     private lateinit var hikeList: MutableList<Hike>
     private lateinit var filteredHikeList: MutableList<Hike>
     private lateinit var dbHelper: HikeDbHelper
+
+    // Advanced search filters
+    private var currentSearchQuery: String = ""
+    private var currentLocationFilter: String = ""
+    private var currentMinLength: Double? = null
+    private var currentMaxLength: Double? = null
+    private var currentDateFilter: String = ""
 
     companion object {
         private const val TAG = "HikeListActivity"
@@ -60,16 +68,22 @@ class HikeListActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterHikes(s.toString())
+                currentSearchQuery = s.toString()
+                applyAdvancedFilters()
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
         binding.clearSearchButton.setOnClickListener {
-            binding.searchInput.text.clear()
-            filterHikes("")
-            binding.clearSearchButton.visibility = View.GONE
+            clearAllFilters()
+        }
+
+        // Advanced search button
+        binding.clearSearchButton.setImageResource(R.drawable.eye_line)
+        binding.clearSearchButton.visibility = View.VISIBLE
+        binding.clearSearchButton.setOnClickListener {
+            showAdvancedSearchDialog()
         }
     }
 
@@ -151,36 +165,139 @@ class HikeListActivity : AppCompatActivity() {
         }
     }
 
-    private fun filterHikes(query: String) {
+    private fun applyAdvancedFilters() {
         filteredHikeList.clear()
 
-        if (query.isEmpty()) {
+        if (currentSearchQuery.isEmpty() &&
+            currentLocationFilter.isEmpty() &&
+            currentMinLength == null &&
+            currentMaxLength == null &&
+            currentDateFilter.isEmpty()) {
+            // No filters applied, show all hikes
             filteredHikeList.addAll(hikeList)
-            binding.clearSearchButton.visibility = View.GONE
         } else {
-            val lowerCaseQuery = query.lowercase().trim()
             val filtered = hikeList.filter { hike ->
-                hike.name.lowercase().contains(lowerCaseQuery) ||
-                        hike.location.lowercase().contains(lowerCaseQuery) ||
-                        hike.difficulty.lowercase().contains(lowerCaseQuery) ||
-                        hike.length.toString().contains(lowerCaseQuery) ||
-                        hike.parking.lowercase().contains(lowerCaseQuery)
+                // Name search (partial match)
+                val nameMatches = currentSearchQuery.isEmpty() ||
+                        hike.name.lowercase().contains(currentSearchQuery.lowercase())
+
+                // Location filter (exact or partial match)
+                val locationMatches = currentLocationFilter.isEmpty() ||
+                        hike.location.lowercase().contains(currentLocationFilter.lowercase())
+
+                // Length range filter
+                val lengthMatches = when {
+                    currentMinLength != null && currentMaxLength != null ->
+                        hike.length >= currentMinLength!! && hike.length <= currentMaxLength!!
+                    currentMinLength != null -> hike.length >= currentMinLength!!
+                    currentMaxLength != null -> hike.length <= currentMaxLength!!
+                    else -> true
+                }
+
+                // Date filter (partial match for day, month, or year)
+                val dateMatches = currentDateFilter.isEmpty() ||
+                        hike.date.contains(currentDateFilter)
+
+                nameMatches && locationMatches && lengthMatches && dateMatches
             }
             filteredHikeList.addAll(filtered)
-            binding.clearSearchButton.visibility = View.VISIBLE
         }
 
         hikeAdapter.notifyDataSetChanged()
         updateHikeCount()
         updateEmptyState()
+        updateFilterIndicator()
+    }
+
+    private fun showAdvancedSearchDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_advanced_search, null)
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle("Filter your results")
+            .setView(dialogView)
+            .setPositiveButton("Apply Filters") { dialog, which ->
+                // Get filter values from dialog
+                val locationInput = dialogView.findViewById<android.widget.EditText>(R.id.etLocationFilter)
+                val minLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMinLength)
+                val maxLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMaxLength)
+                val dateInput = dialogView.findViewById<android.widget.EditText>(R.id.etDateFilter)
+
+                currentLocationFilter = locationInput.text.toString().trim()
+                currentMinLength = minLengthInput.text.toString().trim().toDoubleOrNull()
+                currentMaxLength = maxLengthInput.text.toString().trim().toDoubleOrNull()
+                currentDateFilter = dateInput.text.toString().trim()
+
+                applyAdvancedFilters()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .setNeutralButton("Clear All") { dialog, which ->
+                clearAllFilters()
+            }
+            .create()
+
+        // Pre-fill current filter values
+        val locationInput = dialogView.findViewById<android.widget.EditText>(R.id.etLocationFilter)
+        val minLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMinLength)
+        val maxLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMaxLength)
+        val dateInput = dialogView.findViewById<android.widget.EditText>(R.id.etDateFilter)
+
+        locationInput.setText(currentLocationFilter)
+        minLengthInput.setText(currentMinLength?.toString() ?: "")
+        maxLengthInput.setText(currentMaxLength?.toString() ?: "")
+        dateInput.setText(currentDateFilter)
+
+        dialog.setOnShowListener {
+            // Blue
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLUE)
+
+            // Red
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.RED)
+
+            // Blue
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL)?.setTextColor(Color.BLUE)
+        }
+
+        dialog.show()
+    }
+
+    private fun clearAllFilters() {
+        currentSearchQuery = ""
+        currentLocationFilter = ""
+        currentMinLength = null
+        currentMaxLength = null
+        currentDateFilter = ""
+
+        binding.searchInput.text.clear()
+        applyAdvancedFilters()
+        updateFilterIndicator()
+    }
+
+    private fun updateFilterIndicator() {
+        val hasActiveFilters = currentLocationFilter.isNotEmpty() ||
+                currentMinLength != null ||
+                currentMaxLength != null ||
+                currentDateFilter.isNotEmpty()
+
+        if (hasActiveFilters) {
+            binding.clearSearchButton.setColorFilter(resources.getColor(android.R.color.holo_red_light))
+            binding.clearSearchButton.contentDescription = "Clear all filters"
+        } else {
+            binding.clearSearchButton.clearColorFilter()
+            binding.clearSearchButton.contentDescription = "Advanced search"
+        }
     }
 
     private fun updateHikeCount() {
         val totalHikes = hikeList.size
         val filteredHikes = filteredHikeList.size
-        val searchQuery = binding.searchInput.text.toString().trim()
+        val hasFilters = currentSearchQuery.isNotEmpty() ||
+                currentLocationFilter.isNotEmpty() ||
+                currentMinLength != null ||
+                currentMaxLength != null ||
+                currentDateFilter.isNotEmpty()
 
-        val countText = if (searchQuery.isNotEmpty()) {
+        val countText = if (hasFilters) {
             "$filteredHikes hike${if (filteredHikes != 1) "s" else ""} found ($totalHikes total)"
         } else {
             "$totalHikes hike${if (totalHikes != 1) "s" else ""} recorded"
@@ -190,17 +307,21 @@ class HikeListActivity : AppCompatActivity() {
     }
 
     private fun updateEmptyState() {
-        val searchQuery = binding.searchInput.text.toString().trim()
+        val hasFilters = currentSearchQuery.isNotEmpty() ||
+                currentLocationFilter.isNotEmpty() ||
+                currentMinLength != null ||
+                currentMaxLength != null ||
+                currentDateFilter.isNotEmpty()
 
         if (filteredHikeList.isEmpty()) {
             binding.emptyState.visibility = View.VISIBLE
             binding.hikesRecyclerView.visibility = View.GONE
 
-            if (searchQuery.isNotEmpty()) {
+            if (hasFilters) {
                 // Search results empty
                 binding.emptyStateIcon.setImageResource(R.drawable.search_line)
                 binding.emptyStateTitle.text = "No Matching Hikes"
-                binding.emptyStateText.text = "No hikes found matching \"$searchQuery\""
+                binding.emptyStateText.text = getEmptyStateFilterMessage()
                 binding.clearSearchButtonEmpty.visibility = View.VISIBLE
             } else {
                 // No hikes at all
@@ -212,6 +333,36 @@ class HikeListActivity : AppCompatActivity() {
         } else {
             binding.emptyState.visibility = View.GONE
             binding.hikesRecyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getEmptyStateFilterMessage(): String {
+        val filters = mutableListOf<String>()
+
+        if (currentSearchQuery.isNotEmpty()) {
+            filters.add("name containing \"$currentSearchQuery\"")
+        }
+        if (currentLocationFilter.isNotEmpty()) {
+            filters.add("location containing \"$currentLocationFilter\"")
+        }
+        if (currentMinLength != null || currentMaxLength != null) {
+            val lengthFilter = when {
+                currentMinLength != null && currentMaxLength != null ->
+                    "length between ${currentMinLength}km and ${currentMaxLength}km"
+                currentMinLength != null -> "length ≥ ${currentMinLength}km"
+                currentMaxLength != null -> "length ≤ ${currentMaxLength}km"
+                else -> ""
+            }
+            filters.add(lengthFilter)
+        }
+        if (currentDateFilter.isNotEmpty()) {
+            filters.add("date containing \"$currentDateFilter\"")
+        }
+
+        return if (filters.isNotEmpty()) {
+            "No hikes found with: ${filters.joinToString(", ")}"
+        } else {
+            "No hikes found with current filters"
         }
     }
 
@@ -228,9 +379,7 @@ class HikeListActivity : AppCompatActivity() {
 
     // Handle clear search from empty state
     fun onClearSearchClicked(view: View) {
-        binding.searchInput.text.clear()
-        filterHikes("")
-        binding.clearSearchButton.visibility = View.GONE
+        clearAllFilters()
     }
 
     override fun onResume() {
