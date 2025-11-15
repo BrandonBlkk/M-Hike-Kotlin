@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/main_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/white">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="16dp"
+            android:background="@android:color/white"
+            android:elevation="2dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/arrow_left_line"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/black"
+                android:padding="12dp"
+                android:contentDescription="Back" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Hike"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#222222"
+                android:gravity="center" />
+
+            <!-- Spacer to balance the layout -->
+            <View
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
+        </LinearLayout>
+
+        <!-- Scrollable Form Section -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <!-- Hike Name -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hike Name *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etHikeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter hike name"
+                    android:textSize="14sp"
+                    android:inputType="textCapWords"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/tvHikeNameError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name of hike is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Location -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Location *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter location"
+                    android:textSize="14sp"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/tvLocationError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Location is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Date Picker -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Date *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:id="@+id/layoutPickDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tvSelectedDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select date"
+                        android:textColor="#777777"
+                        android:textSize="14sp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        android:tint="#777777" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvDateError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Date is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Parking Availability -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Parking Available *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <Spinner
+                    android:id="@+id/spParking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:layout_marginBottom="16dp"
+                    android:padding="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvParkingError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Parking info is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Length -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Length (km) *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter length in kilometers"
+                    android:textSize="14sp"
+                    android:inputType="numberDecimal"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/tvLengthError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Length is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Route Type -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Route Type"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <Spinner
+                    android:id="@+id/spRouteType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Difficulty Level -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Difficulty Level *"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <Spinner
+                    android:id="@+id/spDifficulty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:layout_marginBottom="16dp"
+                    android:padding="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvDifficultyError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Difficulty is required"
+                    android:textColor="#f44336"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Hike Completed Toggle -->
+                <LinearLayout
+                    android:id="@+id/layoutHikeCompleted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="#f8f9fa"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="#f8f9fa">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Hike Completed"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:textColor="#4a5568" />
+
+                        <TextView
+                            android:id="@+id/tvCompletionStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Mark as planned"
+                            android:textSize="12sp"
+                            android:textColor="#666666"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/switchHikeCompleted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:trackTint="#f0f0f0"
+                        android:thumbTint="#f4f3f4" />
+                </LinearLayout>
+
+                <!-- Completed Date (Initially hidden) -->
+                <LinearLayout
+                    android:id="@+id/layoutCompletedDateContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Completed Date *"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutPickCompletedDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/edittext_border"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:id="@+id/tvCompletedDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Select completed date"
+                            android:textColor="#777777"
+                            android:textSize="14sp"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_my_calendar"
+                            android:tint="#777777" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvCompletedDateError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Completed date is required for completed hikes"
+                        android:textColor="#f44336"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Weather -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Weather Conditions"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etWeather"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Describe the weather during your hike"
+                    android:textSize="14sp"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Description -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Describe your hike experience..."
+                    android:textSize="14sp"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Notes -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Personal Notes"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add any personal notes or observations..."
+                    android:minLines="3"
+                    android:inputType="textMultiLine"
+                    android:textSize="14sp"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Update Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdateHike"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Update Hike"
+                    android:backgroundTint="@color/main_color"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="8dp"
+                    android:paddingVertical="14dp" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>

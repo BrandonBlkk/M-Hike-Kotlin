@@ -60,7 +60,7 @@
                         android:layout_height="wrap_content"
                         android:text="Location"
                         android:textSize="12sp"
-                        android:textColor="@color/success_color" />
+                        android:textColor="@color/gray" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -77,7 +77,7 @@
                         android:layout_height="wrap_content"
                         android:text="5 km"
                         android:textSize="12sp"
-                        android:textColor="@color/success_color" />
+                        android:textColor="@color/gray" />
 
                     <ImageView
                         android:layout_width="16dp"
@@ -94,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:text="Parking info"
                         android:textSize="12sp"
-                        android:textColor="@color/success_color" />
+                        android:textColor="@color/gray" />
                 </LinearLayout>
 
                 <!-- Difficulty and Date with icons -->
@@ -139,7 +139,7 @@
                         android:layout_height="wrap_content"
                         android:text="2 days ago"
                         android:textSize="10sp"
-                        android:textColor="@color/success_color" />
+                        android:textColor="@color/gray" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -185,8 +185,6 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
-            <!-- Individual observation TextViews will be added dynamically -->
         </LinearLayout>
 
     </LinearLayout>

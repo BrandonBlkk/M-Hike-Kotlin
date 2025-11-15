@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:text="Hike Details"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="#222222"
             android:gravity="center" />
 
@@ -72,7 +72,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="24px">
+                    android:layout_marginBottom="24px"
+                    android:paddingBottom="10dp" >
 
                     <TextView
                         android:layout_width="0dp"
@@ -464,6 +465,35 @@
                         android:gravity="center"
                         android:drawablePadding="12dp"
                         android:drawableTop="@drawable/ic_observation_empty" />
+                </LinearLayout>
+
+                <!-- Add Observation Button -->
+                <LinearLayout
+                    android:id="@+id/btnAddObservation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/add_circle_fill"
+                        android:tint="#4CAF50"
+                        android:layout_marginEnd="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add New Observation"
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50"
+                        android:textSize="16sp" />
+
                 </LinearLayout>
 
             </LinearLayout>

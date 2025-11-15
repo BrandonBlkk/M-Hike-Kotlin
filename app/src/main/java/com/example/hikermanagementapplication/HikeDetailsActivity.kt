@@ -1,12 +1,14 @@
 package com.example.hikermanagementapplication
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hikermanagementapplication.databinding.ActivityHikeDetailsBinding
@@ -16,6 +18,36 @@ class HikeDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHikeDetailsBinding
     private lateinit var dbHelper: HikeDbHelper
+    private var currentHikeId: Long = -1L
+    private lateinit var currentHike: Hike
+
+    // Register for activity result to refresh data after editing
+    private val editHikeResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Refresh the hike details after successful edit
+            loadHikeDetails()
+        }
+    }
+
+    private val editObservationResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Refresh the observations after successful edit
+            loadHikeDetails()
+        }
+    }
+
+    private val addObservationResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Refresh the observations after adding new one
+            loadHikeDetails()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,25 +59,32 @@ class HikeDetailsActivity : AppCompatActivity() {
         // Setup back button
         setupBackButton()
 
-        // Get hike ID
-        val hikeId = intent.getLongExtra("hikeId", -1L)
+        // Get hike ID from intent
+        currentHikeId = intent.getLongExtra("hikeId", -1L)
 
-        if (hikeId == -1L) {
+        if (currentHikeId == -1L) {
             Toast.makeText(this, "Error: Hike not found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        // Load initial hike details
+        loadHikeDetails()
+    }
+
+    private fun loadHikeDetails() {
         // Load hike details
-        val hike = dbHelper.getHikeById(hikeId)
+        val hike = dbHelper.getHikeById(currentHikeId)
         if (hike == null) {
             Toast.makeText(this, "Error: Hike not found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        currentHike = hike
+
         // Load observations for this hike
-        val observations = dbHelper.getObservationsByHikeId(hikeId)
+        val observations = dbHelper.getObservationsByHikeId(currentHikeId)
 
         setupViews(hike, observations)
     }
@@ -92,10 +131,31 @@ class HikeDetailsActivity : AppCompatActivity() {
         // Setup observations
         setupObservations(observations)
 
+        // Add Observation button
+        binding.btnAddObservation.setOnClickListener {
+            addNewObservation()
+        }
+
+        // Edit button - UPDATED to use the launcher
+        binding.editHikeButton.setOnClickListener {
+            val intent = Intent(this, EditHikeActivity::class.java).apply {
+                putExtra("hikeId", hike.id)
+            }
+            editHikeResultLauncher.launch(intent)
+        }
+
         // Delete button
         binding.deleteHikeButton.setOnClickListener {
             showDeleteConfirmationDialog(hike.id)
         }
+    }
+
+    private fun addNewObservation() {
+        val intent = Intent(this, AddObservationActivity::class.java).apply {
+            putExtra("HIKE_ID", currentHikeId)
+            putExtra("HIKE_NAME", currentHike.name)
+        }
+        addObservationResultLauncher.launch(intent)
     }
 
     private fun setupObservations(observations: List<Observation>) {
@@ -140,7 +200,49 @@ class HikeDetailsActivity : AppCompatActivity() {
         observationBinding.observationTime.text = "Time: ${observation.obsTime}"
         observationBinding.observationComments.text = observation.comments ?: "No additional comments"
 
+        // Edit observation button
+        observationBinding.btnEditObservation.setOnClickListener {
+            val intent = Intent(this, EditObservationActivity::class.java).apply {
+                putExtra("observationId", observation.obsId)
+                putExtra("hikeId", currentHikeId)
+            }
+            editObservationResultLauncher.launch(intent)
+        }
+
+        // Delete observation button
+        observationBinding.btnDeleteObservation.setOnClickListener {
+            showDeleteObservationConfirmationDialog(observation.obsId, observation.observation)
+        }
+
         return observationBinding.root
+    }
+
+    private fun showDeleteObservationConfirmationDialog(obsId: Long, observationText: String) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Delete Observation")
+            .setMessage("Are you sure you want to delete this observation?\n\n\"$observationText\"\n\nThis action cannot be undone!")
+            .setPositiveButton("Delete") { dialogInterface: DialogInterface, i: Int ->
+                deleteObservation(obsId)
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.setOnShowListener {
+            // Red
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.RED)
+
+            // Blue
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.BLUE)
+        }
+
+        dialog.show()
+    }
+
+    private fun deleteObservation(obsId: Long) {
+        dbHelper.deleteObservation(obsId)
+        Toast.makeText(this, "Observation deleted successfully", Toast.LENGTH_SHORT).show()
+        // Refresh the observations
+        loadHikeDetails()
     }
 
     private fun showDeleteConfirmationDialog(hikeId: Long) {
@@ -171,6 +273,14 @@ class HikeDetailsActivity : AppCompatActivity() {
             finish()
         } else {
             Toast.makeText(this, "Error deleting hike", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh data when returning to this activity
+        if (currentHikeId != -1L) {
+            loadHikeDetails()
         }
     }
 }

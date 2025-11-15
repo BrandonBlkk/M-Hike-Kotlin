@@ -46,6 +46,16 @@
             android:name=".HikeDetailsActivity"
             android:exported="true" />
 
+        <!-- Edit Hike Activity -->
+        <activity
+            android:name=".EditHikeActivity"
+            android:exported="false" />
+
+        <!-- Edit Observation Activity -->
+        <activity
+            android:name=".EditObservationActivity"
+            android:exported="false" />
+
         <!-- Weather Forecast Activity -->
         <activity
             android:name=".WeatherForecastActivity"

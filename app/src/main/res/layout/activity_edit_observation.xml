@@ -25,7 +25,7 @@
             android:elevation="2dp">
 
             <ImageButton
-                android:id="@+id/btnBackObservation"
+                android:id="@+id/btnBack"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/arrow_left_line"
@@ -35,16 +35,16 @@
                 android:contentDescription="Back" />
 
             <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Add Observation"
+                android:text="Edit Observation"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="#222222"
                 android:gravity="center" />
 
-            <!-- Spacer to balance the layout -->
             <View
                 android:layout_width="28dp"
                 android:layout_height="28dp" />
@@ -60,33 +60,6 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <!-- Select Hike -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Select Hike *"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="4dp" />
-
-                <Spinner
-                    android:id="@+id/spSelectHike"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_border"
-                    android:padding="10dp"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvHikeError"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Please select a hike"
-                    android:textColor="#f44336"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    android:layout_marginBottom="16dp" />
 
                 <!-- Observation -->
                 <TextView
@@ -117,17 +90,41 @@
                     android:visibility="gone"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Current Time -->
+                <!-- Time Display -->
                 <TextView
-                    android:id="@+id/tvTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Current time auto-filled"
+                    android:text="Time"
+                    android:textStyle="bold"
                     android:textSize="14sp"
-                    android:textColor="#777777"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="4dp" />
 
-                <!-- Additional Comments -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/edittext_border"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tvCurrentTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current time will be auto-filled"
+                        android:textColor="#666666"
+                        android:textSize="14sp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        android:tint="#666666" />
+                </LinearLayout>
+
+                <!-- Comments -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -148,12 +145,12 @@
                     android:padding="10dp"
                     android:layout_marginBottom="24dp" />
 
-                <!-- Save Button -->
+                <!-- Update/Add Button -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveObservation"
+                    android:id="@+id/btnUpdateObservation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add Observation"
+                    android:text="Update Observation"
                     android:backgroundTint="@color/main_color"
                     android:textColor="@android:color/white"
                     android:textSize="14sp"

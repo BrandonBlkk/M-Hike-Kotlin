@@ -164,6 +164,28 @@ class HikeDbHelper(context: Context) :
         return null
     }
 
+    fun updateHike(hike: Hike): Boolean {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, hike.name)
+            put(COLUMN_LOCATION, hike.location)
+            put(COLUMN_DATE, hike.date)
+            put(COLUMN_PARKING, hike.parking)
+            put(COLUMN_LENGTH, hike.length)
+            put(COLUMN_ROUTE_TYPE, hike.routeType)
+            put(COLUMN_DIFFICULTY, hike.difficulty)
+            put(COLUMN_DESCRIPTION, hike.description)
+            put(COLUMN_NOTES, hike.notes)
+            put(COLUMN_WEATHER, hike.weather)
+            put(COLUMN_IS_COMPLETED, hike.isCompleted)
+            put(COLUMN_COMPLETED_DATE, hike.completedDate)
+        }
+
+        val rowsAffected = db.update(TABLE_HIKES, values, "$COLUMN_ID = ?", arrayOf(hike.id.toString()))
+        db.close()
+        return rowsAffected > 0
+    }
+
     fun getObservationsByHikeId(hikeId: Long): List<Observation> {
         return getObservationsForHike(hikeId)
     }
