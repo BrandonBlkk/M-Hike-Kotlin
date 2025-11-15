@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="16dp"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="16dp"
             android:background="@android:color/white"
             android:elevation="2dp">
 
@@ -37,6 +38,11 @@
                 android:textSize="18sp"
                 android:textColor="#222222"
                 android:gravity="center" />
+
+            <!-- Spacer to balance the layout -->
+            <View
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
         </LinearLayout>
 
         <!-- Scrollable Form Section -->

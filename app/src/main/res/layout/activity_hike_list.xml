@@ -7,7 +7,6 @@
     android:background="@color/main_color"
     android:fitsSystemWindows="true">
 
-    <!-- Main Content Area with White Background -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -32,7 +31,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <!-- Centered Title Section -->
+            <!-- Title -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +58,7 @@
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
-            <!-- Clear All Button with spacer weight -->
+            <!-- Clear All Button -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -118,7 +117,11 @@
                         android:hint="Search hikes by name, location, difficulty..."
                         android:padding="0dp"
                         android:textColor="#333"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:imeOptions="actionSearch" />
 
                     <ImageView
                         android:id="@+id/clearSearchButton"
@@ -131,7 +134,7 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- White Background Section with Hike List -->
+        <!-- Hike List -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

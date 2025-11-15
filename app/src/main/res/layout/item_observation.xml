@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/observationTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: 12:00"
+            android:textSize="12sp"
+            android:textColor="#666" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/observationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Observation description"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp"
+        android:lineSpacingExtra="2dp" />
+
+    <TextView
+        android:id="@+id/observationComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Comments"
+        android:textSize="12sp"
+        android:textColor="#666"
+        android:lineSpacingExtra="2dp" />
+
+</LinearLayout>

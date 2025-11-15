@@ -130,22 +130,42 @@ class HikeDbHelper(context: Context) :
         return hikes
     }
 
-    fun deleteHike(hikeId: Long): Boolean {
-        val db = writableDatabase
-        val result = db.delete(TABLE_HIKES, "$COLUMN_ID=?", arrayOf(hikeId.toString()))
-        db.close()
-        return result > 0
+    fun getHikeById(hikeId: Long): Hike? {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_HIKES,
+            null,
+            "$COLUMN_ID = ?",
+            arrayOf(hikeId.toString()),
+            null,
+            null,
+            null
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                return Hike(
+                    id = it.getLong(it.getColumnIndexOrThrow(COLUMN_ID)),
+                    name = it.getString(it.getColumnIndexOrThrow(COLUMN_NAME)),
+                    location = it.getString(it.getColumnIndexOrThrow(COLUMN_LOCATION)),
+                    date = it.getString(it.getColumnIndexOrThrow(COLUMN_DATE)),
+                    parking = it.getString(it.getColumnIndexOrThrow(COLUMN_PARKING)),
+                    length = it.getDouble(it.getColumnIndexOrThrow(COLUMN_LENGTH)),
+                    routeType = it.getString(it.getColumnIndexOrThrow(COLUMN_ROUTE_TYPE)),
+                    difficulty = it.getString(it.getColumnIndexOrThrow(COLUMN_DIFFICULTY)),
+                    description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION)),
+                    notes = it.getString(it.getColumnIndexOrThrow(COLUMN_NOTES)),
+                    weather = it.getString(it.getColumnIndexOrThrow(COLUMN_WEATHER)),
+                    isCompleted = it.getInt(it.getColumnIndexOrThrow(COLUMN_IS_COMPLETED)),
+                    completedDate = it.getString(it.getColumnIndexOrThrow(COLUMN_COMPLETED_DATE)),
+                    createdAt = it.getString(it.getColumnIndexOrThrow(COLUMN_CREATED_AT))
+                )
+            }
+        }
+        return null
     }
 
-    fun insertObservation(observation: Observation): Long {
-        val db = writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_HIKE_ID, observation.hikeId)
-            put(COLUMN_OBSERVATION, observation.observation)
-            put(COLUMN_OBS_TIME, observation.obsTime)
-            put(COLUMN_COMMENTS, observation.comments)
-        }
-        return db.insert(TABLE_OBSERVATIONS, null, values)
+    fun getObservationsByHikeId(hikeId: Long): List<Observation> {
+        return getObservationsForHike(hikeId)
     }
 
     fun getObservationsForHike(hikeId: Long): List<Observation> {
@@ -174,6 +194,24 @@ class HikeDbHelper(context: Context) :
         }
         cursor.close()
         return observations
+    }
+
+    fun deleteHike(hikeId: Long): Boolean {
+        val db = writableDatabase
+        val result = db.delete(TABLE_HIKES, "$COLUMN_ID=?", arrayOf(hikeId.toString()))
+        db.close()
+        return result > 0
+    }
+
+    fun insertObservation(observation: Observation): Long {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_HIKE_ID, observation.hikeId)
+            put(COLUMN_OBSERVATION, observation.observation)
+            put(COLUMN_OBS_TIME, observation.obsTime)
+            put(COLUMN_COMMENTS, observation.comments)
+        }
+        return db.insert(TABLE_OBSERVATIONS, null, values)
     }
 
     fun deleteObservation(obsId: Long) {
