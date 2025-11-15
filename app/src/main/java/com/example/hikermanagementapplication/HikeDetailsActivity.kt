@@ -5,28 +5,29 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.hikermanagementapplication.databinding.ActivityHikeDetailsBinding
+import com.example.hikermanagementapplication.databinding.ItemObservationBinding
 
 class HikeDetailsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHikeDetailsBinding
     private lateinit var dbHelper: HikeDbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hike_details)
+        binding = ActivityHikeDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         dbHelper = HikeDbHelper(this)
 
         // Setup back button
         setupBackButton()
 
-        // Get hike ID from intent
+        // Get hike ID
         val hikeId = intent.getLongExtra("hikeId", -1L)
 
         if (hikeId == -1L) {
@@ -50,77 +51,71 @@ class HikeDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupBackButton() {
-        val backButton = findViewById<ImageButton>(R.id.backButton)
-        backButton.setOnClickListener {
+        binding.backButton.setOnClickListener {
             onBackPressed()
         }
     }
 
     private fun setupViews(hike: Hike, observations: List<Observation>) {
         // Set hike information
-        findViewById<TextView>(R.id.hikeNameText).text = hike.name
-        findViewById<TextView>(R.id.hikeLocationText).text = hike.location
-        findViewById<TextView>(R.id.hikeDateText).text = hike.date
-        findViewById<TextView>(R.id.hikeLengthText).text = "${hike.length} km"
-        findViewById<TextView>(R.id.hikeDifficultyText).text = hike.difficulty
-        findViewById<TextView>(R.id.hikeParkingText).text = hike.parking
-        findViewById<TextView>(R.id.hikeRouteTypeText).text = hike.routeType ?: "Not specified"
+        binding.hikeNameText.text = hike.name
+        binding.hikeLocationText.text = hike.location
+        binding.hikeDateText.text = hike.date
+        binding.hikeLengthText.text = "${hike.length} km"
+        binding.hikeDifficultyText.text = hike.difficulty
+        binding.hikeParkingText.text = hike.parking
+        binding.hikeRouteTypeText.text = hike.routeType ?: "Not specified"
 
         // Set status with dynamic background color
-        val statusTextView = findViewById<TextView>(R.id.hikeStatusText)
         val statusText = if (hike.isCompleted == 1) "COMPLETED" else "PLANNED"
-        statusTextView.text = statusText
+        binding.hikeStatusText.text = statusText
 
         // Set background based on status
         if (hike.isCompleted == 1) {
-            statusTextView.setBackgroundResource(R.drawable.status_completed_bg)
+            binding.hikeStatusText.setBackgroundResource(R.drawable.status_completed_bg)
         } else {
-            statusTextView.setBackgroundResource(R.drawable.status_planned_bg)
+            binding.hikeStatusText.setBackgroundResource(R.drawable.status_planned_bg)
         }
 
         // Show/hide completed date
         if (hike.isCompleted == 1 && !hike.completedDate.isNullOrEmpty()) {
-            findViewById<LinearLayout>(R.id.completedDateLayout).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.hikeCompletedDateText).text = hike.completedDate
+            binding.completedDateLayout.visibility = View.VISIBLE
+            binding.hikeCompletedDateText.text = hike.completedDate
         } else {
-            findViewById<LinearLayout>(R.id.completedDateLayout).visibility = View.GONE
+            binding.completedDateLayout.visibility = View.GONE
         }
 
         // Set description and notes
-        findViewById<TextView>(R.id.hikeDescriptionText).text = hike.description ?: "No description provided"
-        findViewById<TextView>(R.id.hikeNotesText).text = hike.notes ?: "No notes provided"
+        binding.hikeDescriptionText.text = hike.description ?: "No description provided"
+        binding.hikeNotesText.text = hike.notes ?: "No notes provided"
 
         // Setup observations
         setupObservations(observations)
 
         // Delete button
-        findViewById<Button>(R.id.deleteHikeButton).setOnClickListener {
+        binding.deleteHikeButton.setOnClickListener {
             showDeleteConfirmationDialog(hike.id)
         }
     }
 
     private fun setupObservations(observations: List<Observation>) {
-        val observationsCountText = findViewById<TextView>(R.id.observationsCountText)
-        val observationsListLayout = findViewById<LinearLayout>(R.id.observationsListLayout)
-        val noObservationsLayout = findViewById<LinearLayout>(R.id.noObservationsLayout)
-
         // Update count
-        observationsCountText.text = "${observations.size}"
+        binding.observationsCountText.text = "${observations.size}"
 
         if (observations.isEmpty()) {
-            noObservationsLayout.visibility = View.VISIBLE
-            observationsListLayout.visibility = View.GONE
+            binding.noObservationsLayout.visibility = View.VISIBLE
+            binding.observationsListLayout.visibility = View.GONE
         } else {
-            noObservationsLayout.visibility = View.GONE
-            observationsListLayout.visibility = View.VISIBLE
+            binding.noObservationsLayout.visibility = View.GONE
+            binding.observationsListLayout.visibility = View.VISIBLE
 
             // Clear existing views
-            observationsListLayout.removeAllViews()
+            binding.observationsListLayout.removeAllViews()
 
             // Add each observation
             observations.forEachIndexed { index, observation ->
                 val observationView = createObservationView(observation, index)
-                observationsListLayout.addView(observationView)
+                binding.observationsListLayout.addView(observationView)
 
                 // Add divider between observations (except for the last one)
                 if (index < observations.size - 1) {
@@ -132,25 +127,20 @@ class HikeDetailsActivity : AppCompatActivity() {
                         setMargins(0, 12, 0, 12)
                     }
                     divider.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
-                    observationsListLayout.addView(divider)
+                    binding.observationsListLayout.addView(divider)
                 }
             }
         }
     }
 
     private fun createObservationView(observation: Observation, index: Int): View {
-        val inflater = LayoutInflater.from(this)
-        val observationView = inflater.inflate(R.layout.item_observation, null) as LinearLayout
+        val observationBinding = ItemObservationBinding.inflate(LayoutInflater.from(this))
 
-        val observationText = observationView.findViewById<TextView>(R.id.observationText)
-        val observationTime = observationView.findViewById<TextView>(R.id.observationTime)
-        val observationComments = observationView.findViewById<TextView>(R.id.observationComments)
+        observationBinding.observationText.text = observation.observation
+        observationBinding.observationTime.text = "Time: ${observation.obsTime}"
+        observationBinding.observationComments.text = observation.comments ?: "No additional comments"
 
-        observationText.text = observation.observation
-        observationTime.text = "Time: ${observation.obsTime}"
-        observationComments.text = observation.comments ?: "No additional comments"
-
-        return observationView
+        return observationBinding.root
     }
 
     private fun showDeleteConfirmationDialog(hikeId: Long) {

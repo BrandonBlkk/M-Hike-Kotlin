@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hikermanagementapplication.databinding.RecentHikeBinding
 
 class HikeAdapter(
     private var hikeList: MutableList<Hike>,
@@ -17,84 +15,76 @@ class HikeAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<HikeAdapter.HikeViewHolder>() {
 
-    inner class HikeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val hikeName: TextView = itemView.findViewById(R.id.hikeName)
-        val hikeLocation: TextView = itemView.findViewById(R.id.hikeLocation)
-        val hikeDistance: TextView = itemView.findViewById(R.id.hikeDistance)
-        val hikeParking: TextView = itemView.findViewById(R.id.hikeParking)
-        val hikeDifficulty: TextView = itemView.findViewById(R.id.hikeDifficulty)
-        val hikeDate: TextView = itemView.findViewById(R.id.hikeDate)
-        val viewDetailsIcon: ImageView = itemView.findViewById(R.id.viewDetailsIcon)
-        val observationsContainer: LinearLayout = itemView.findViewById(R.id.observationsContainer)
+    inner class HikeViewHolder(private val binding: RecentHikeBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(hike: Hike) {
+            // Display main info
+            binding.hikeName.text = hike.name
+            binding.hikeLocation.text = "${hike.location}"
+            binding.hikeDistance.text = "${hike.length} km"
+            binding.hikeParking.text = hike.parking
+            binding.hikeDifficulty.text = hike.difficulty
+            binding.hikeDate.text = hike.date
+
+            // Highlight difficulty color
+            when (hike.difficulty.lowercase()) {
+                "easy" -> binding.hikeDifficulty.setBackgroundColor(Color.parseColor("#4CAF50")) // green
+                "moderate" -> binding.hikeDifficulty.setBackgroundColor(Color.parseColor("#FFC107")) // amber
+                "hard" -> binding.hikeDifficulty.setBackgroundColor(Color.parseColor("#F44336")) // red
+                else -> binding.hikeDifficulty.setBackgroundColor(Color.parseColor("#607D8B")) // grey
+            }
+
+            // Observations section
+            binding.observationsContainer.removeAllViews()
+            val observations = dbHelper.getObservationsForHike(hike.id)
+            if (observations.isEmpty()) {
+                val tv = TextView(binding.root.context).apply {
+                    text = "No observations yet"
+                    textSize = 12f
+                    setTextColor(Color.parseColor("#333333"))
+                }
+                binding.observationsContainer.addView(tv)
+            } else {
+                for (obs in observations) {
+                    val tv = TextView(binding.root.context).apply {
+                        text = "• ${obs.observation} (${obs.obsTime})"
+                        textSize = 12f
+                        setTextColor(Color.parseColor("#333333"))
+                        setPadding(0, 4, 0, 4)
+                    }
+                    binding.observationsContainer.addView(tv)
+                }
+            }
+
+            // Click listener to open details
+            binding.viewDetailsIcon.setOnClickListener {
+                val intent = Intent(context, HikeDetailsActivity::class.java).apply {
+                    putExtra("hikeId", hike.id)
+                    putExtra("hikeName", hike.name)
+                    putExtra("hikeDate", hike.date)
+                    putExtra("hikeDistance", hike.length)
+                    putExtra("hikeLocation", hike.location)
+                    putExtra("hikeDifficulty", hike.difficulty)
+                    putExtra("hikeParking", hike.parking)
+                    putExtra("hikeDescription", hike.description)
+                    putExtra("hikeNotes", hike.notes)
+                    putExtra("hikeWeather", hike.weather)
+                    putExtra("hikeRouteType", hike.routeType)
+                    putExtra("isCompleted", hike.isCompleted)
+                    putExtra("completedDate", hike.completedDate)
+                }
+                context.startActivity(intent)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HikeViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recent_hike, parent, false)
-        return HikeViewHolder(view)
+        val binding = RecentHikeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HikeViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HikeViewHolder, position: Int) {
         val hike = hikeList[position]
-
-        // Display main info
-        holder.hikeName.text = hike.name
-        holder.hikeLocation.text = "${hike.location}"
-        holder.hikeDistance.text = "${hike.length} km"
-        holder.hikeParking.text = hike.parking
-
-        holder.hikeDifficulty.text = hike.difficulty
-        holder.hikeDate.text = hike.date
-
-        // Highlight difficulty color
-        when (hike.difficulty.lowercase()) {
-            "easy" -> holder.hikeDifficulty.setBackgroundColor(Color.parseColor("#4CAF50")) // green
-            "moderate" -> holder.hikeDifficulty.setBackgroundColor(Color.parseColor("#FFC107")) // amber
-            "hard" -> holder.hikeDifficulty.setBackgroundColor(Color.parseColor("#F44336")) // red
-            else -> holder.hikeDifficulty.setBackgroundColor(Color.parseColor("#607D8B")) // grey
-        }
-
-        // Observations section
-        holder.observationsContainer.removeAllViews()
-        val observations = dbHelper.getObservationsForHike(hike.id)
-        if (observations.isEmpty()) {
-            val tv = TextView(holder.itemView.context).apply {
-                text = "No observations yet"
-                textSize = 12f
-                setTextColor(Color.parseColor("#333333"))
-            }
-            holder.observationsContainer.addView(tv)
-        } else {
-            for (obs in observations) {
-                val tv = TextView(holder.itemView.context).apply {
-                    text = "• ${obs.observation} (${obs.obsTime})"
-                    textSize = 12f
-                    setTextColor(Color.parseColor("#333333"))
-                    setPadding(0, 4, 0, 4)
-                }
-                holder.observationsContainer.addView(tv)
-            }
-        }
-
-        // Click listener to open details
-        holder.viewDetailsIcon.setOnClickListener {
-            val intent = Intent(context, HikeDetailsActivity::class.java).apply {
-                putExtra("hikeId", hike.id)
-                putExtra("hikeName", hike.name)
-                putExtra("hikeDate", hike.date)
-                putExtra("hikeDistance", hike.length)
-                putExtra("hikeLocation", hike.location)
-                putExtra("hikeDifficulty", hike.difficulty)
-                putExtra("hikeParking", hike.parking)
-                putExtra("hikeDescription", hike.description)
-                putExtra("hikeNotes", hike.notes)
-                putExtra("hikeWeather", hike.weather)
-                putExtra("hikeRouteType", hike.routeType)
-                putExtra("isCompleted", hike.isCompleted)
-                putExtra("completedDate", hike.completedDate)
-            }
-            context.startActivity(intent)
-        }
+        holder.bind(hike)
     }
 
     override fun getItemCount(): Int = hikeList.size

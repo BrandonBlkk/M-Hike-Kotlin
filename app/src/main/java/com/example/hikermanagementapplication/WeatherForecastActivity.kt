@@ -58,7 +58,6 @@ class WeatherForecastActivity : AppCompatActivity() {
         binding = ActivityWeatherForecastBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initializeViews()
         setupRecyclerViews()
         setupLocationServices()
         setupClickListeners()
@@ -71,11 +70,6 @@ class WeatherForecastActivity : AppCompatActivity() {
         } else {
             requestLocationPermission()
         }
-    }
-
-    private fun initializeViews() {
-        // All views are now accessible through binding
-        // No need to initialize individual views with findViewById
     }
 
     private fun setupRecyclerViews() {

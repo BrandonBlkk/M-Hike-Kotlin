@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hikermanagementapplication.databinding.ActivityHikeListBinding
+import com.example.hikermanagementapplication.databinding.DialogAdvancedSearchBinding
 
 class HikeListActivity : AppCompatActivity() {
 
@@ -74,10 +75,6 @@ class HikeListActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
-
-        binding.clearSearchButton.setOnClickListener {
-            clearAllFilters()
-        }
 
         // Advanced search button
         binding.clearSearchButton.setImageResource(R.drawable.eye_line)
@@ -173,7 +170,8 @@ class HikeListActivity : AppCompatActivity() {
             currentMinLength == null &&
             currentMaxLength == null &&
             currentDateFilter.isEmpty()) {
-            // No filters applied, show all hikes
+
+            // Show all hikes
             filteredHikeList.addAll(hikeList)
         } else {
             val filtered = hikeList.filter { hike ->
@@ -210,21 +208,16 @@ class HikeListActivity : AppCompatActivity() {
     }
 
     private fun showAdvancedSearchDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_advanced_search, null)
+        val dialogBinding = DialogAdvancedSearchBinding.inflate(layoutInflater)
         val dialog = android.app.AlertDialog.Builder(this)
             .setTitle("Filter your results")
-            .setView(dialogView)
+            .setView(dialogBinding.root)
             .setPositiveButton("Apply Filters") { dialog, which ->
-                // Get filter values from dialog
-                val locationInput = dialogView.findViewById<android.widget.EditText>(R.id.etLocationFilter)
-                val minLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMinLength)
-                val maxLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMaxLength)
-                val dateInput = dialogView.findViewById<android.widget.EditText>(R.id.etDateFilter)
-
-                currentLocationFilter = locationInput.text.toString().trim()
-                currentMinLength = minLengthInput.text.toString().trim().toDoubleOrNull()
-                currentMaxLength = maxLengthInput.text.toString().trim().toDoubleOrNull()
-                currentDateFilter = dateInput.text.toString().trim()
+                // Get filter values from dialog using binding
+                currentLocationFilter = dialogBinding.etLocationFilter.text.toString().trim()
+                currentMinLength = dialogBinding.etMinLength.text.toString().trim().toDoubleOrNull()
+                currentMaxLength = dialogBinding.etMaxLength.text.toString().trim().toDoubleOrNull()
+                currentDateFilter = dialogBinding.etDateFilter.text.toString().trim()
 
                 applyAdvancedFilters()
             }
@@ -237,15 +230,10 @@ class HikeListActivity : AppCompatActivity() {
             .create()
 
         // Pre-fill current filter values
-        val locationInput = dialogView.findViewById<android.widget.EditText>(R.id.etLocationFilter)
-        val minLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMinLength)
-        val maxLengthInput = dialogView.findViewById<android.widget.EditText>(R.id.etMaxLength)
-        val dateInput = dialogView.findViewById<android.widget.EditText>(R.id.etDateFilter)
-
-        locationInput.setText(currentLocationFilter)
-        minLengthInput.setText(currentMinLength?.toString() ?: "")
-        maxLengthInput.setText(currentMaxLength?.toString() ?: "")
-        dateInput.setText(currentDateFilter)
+        dialogBinding.etLocationFilter.setText(currentLocationFilter)
+        dialogBinding.etMinLength.setText(currentMinLength?.toString() ?: "")
+        dialogBinding.etMaxLength.setText(currentMaxLength?.toString() ?: "")
+        dialogBinding.etDateFilter.setText(currentDateFilter)
 
         dialog.setOnShowListener {
             // Blue
