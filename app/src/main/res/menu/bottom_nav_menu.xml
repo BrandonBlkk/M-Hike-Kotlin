@@ -13,11 +13,11 @@
         android:icon="@drawable/add_circle"
         android:title="Add Hike"/>
     <item
-        android:id="@+id/navMap"
-        android:icon="@drawable/map_line"
-        android:title="Map"/>
-    <item
         android:id="@+id/navWeather"
         android:icon="@drawable/sun_cloudy_line"
         android:title="Weather"/>
+    <item
+        android:id="@+id/navAbout"
+        android:icon="@drawable/information_line"
+        android:title="About"/>
 </menu>

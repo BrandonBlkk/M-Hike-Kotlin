@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/circle_line"
+                android:tint="#1E6A65" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm Hike Details"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Please review your hike information before saving"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- Basic Information Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f8f9fa"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"
+            android:backgroundTint="#f8f9fa">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Basic Information"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Hike Name -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Name:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationHikeName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Hike Name"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Location -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Location:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Location"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Date -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Date:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Date"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Parking -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Parking:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationParking"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Parking"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Hike Details Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f8f9fa"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"
+            android:backgroundTint="#f8f9fa">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hike Details"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Length -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Length:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationLength"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Length"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Route Type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Route Type:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationRouteType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Route Type"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Difficulty -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Difficulty:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationDifficulty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Difficulty"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Status -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Status:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Status"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+
+            <!-- Completed Date -->
+            <LinearLayout
+                android:id="@+id/confirmationCompletedDateContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Completed Date:"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#4a5568" />
+
+                <TextView
+                    android:id="@+id/confirmationCompletedDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Completed Date"
+                    android:textSize="14sp"
+                    android:textColor="#2d3748"
+                    android:textAlignment="textEnd" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Description Section -->
+        <LinearLayout
+            android:id="@+id/confirmationDescriptionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f8f9fa"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"
+            android:backgroundTint="#f8f9fa"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/confirmationDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="14sp"
+                android:textColor="#2d3748"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- Personal Notes Section -->
+        <LinearLayout
+            android:id="@+id/confirmationNotesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f8f9fa"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"
+            android:backgroundTint="#f8f9fa"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Personal Notes"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/confirmationNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Personal Notes"
+                android:textSize="14sp"
+                android:textColor="#2d3748"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
+
+        <!-- Weather Section -->
+        <LinearLayout
+            android:id="@+id/confirmationWeatherContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f8f9fa"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="2dp"
+            android:backgroundTint="#f8f9fa"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weather Conditions"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1E6A65"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/confirmationWeather"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weather"
+                android:textSize="14sp"
+                android:textColor="#2d3748" />
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:weightSum="2"
+            android:gravity="center">
+
+            <!-- Edit Details Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Edit Details"
+                android:textColor="#1E6A65"
+                android:backgroundTint="#f0f0f0"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="8dp"
+                android:paddingVertical="12dp"
+                app:icon="@drawable/arrow_left_line"
+                app:iconTint="#1E6A65" />
+
+            <!-- Confirm & Save Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirmSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Confirm"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#1E6A65"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="8dp"
+                android:paddingVertical="12dp"
+                app:icon="@drawable/add_circle"
+                app:iconTint="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -2,6 +2,7 @@ package com.example.hikermanagementapplication
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -140,13 +141,6 @@ class WeatherForecastActivity : AppCompatActivity() {
                     finish() // Close current activity
                     true
                 }
-                R.id.navMap -> {
-                    // Navigate to AddObservationActivity
-                    val intent = android.content.Intent(this, AddObservationActivity::class.java)
-                    startActivity(intent)
-                    finish() // Close current activity
-                    true
-                }
                 R.id.navWeather -> {
                     true
                 }
@@ -176,13 +170,13 @@ class WeatherForecastActivity : AppCompatActivity() {
                     finish()
                     true
                 }
-                R.id.navMap -> {
-                    val intent = android.content.Intent(this, AddObservationActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                R.id.navWeather -> {
                     true
                 }
-                R.id.navWeather -> {
+                R.id.navAbout -> {
+                    val intent = android.content.Intent(this, AboutScreenActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false

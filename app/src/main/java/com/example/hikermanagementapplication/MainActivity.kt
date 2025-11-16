@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    // Open Add Observation Screen
+    private fun openAddObservationScreen() {
+        val intent = Intent(this, AddObservationActivity::class.java)
+        startActivity(intent)
+    }
+
     // Open Weather Screen
     private fun openWeatherScreen() {
         val intent = Intent(this, WeatherForecastActivity::class.java)
@@ -56,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         binding.trackProgressCard.setOnClickListener { openHikeListScreen() }
         binding.viewAllButton.setOnClickListener { openHikeListScreen() }
 
+        binding.observationCard.setOnClickListener { openAddObservationScreen() }
+        binding.recordObservationCard.setOnClickListener { openAddObservationScreen() }
+
         binding.weatherInfoCard.setOnClickListener { openWeatherScreen() }
         binding.weatherCard.setOnClickListener { openWeatherScreen() }
 
@@ -80,13 +89,13 @@ class MainActivity : AppCompatActivity() {
                     refreshLauncher.launch(intent)
                     true
                 }
-                R.id.navMap -> {
-                    val intent = Intent(this, AddObservationActivity::class.java)
+                R.id.navWeather -> {
+                    val intent = Intent(this, WeatherForecastActivity::class.java)
                     refreshLauncher.launch(intent)
                     true
                 }
-                R.id.navWeather -> {
-                    val intent = Intent(this, WeatherForecastActivity::class.java)
+                R.id.navAbout -> {
+                    val intent = Intent(this, AboutScreenActivity::class.java)
                     refreshLauncher.launch(intent)
                     true
                 }

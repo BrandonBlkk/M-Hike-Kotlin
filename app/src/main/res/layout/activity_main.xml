@@ -108,6 +108,54 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Add Observation -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="12dp"
+                    android:layout_margin="4dp"
+                    android:padding="12dp"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:id="@+id/observationCard"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/circle_bg_base"
+                            android:backgroundTint="#F3E5F5"
+                            android:padding="18dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:src="@drawable/add_circle_fill"
+                                app:tint="#9C27B0"
+                                android:contentDescription="Add Observation" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Observation"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <!-- My Hike -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
@@ -149,54 +197,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="My Hike"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:layout_marginTop="8dp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Map -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardCornerRadius="12dp"
-                    android:layout_margin="4dp"
-                    android:padding="12dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:id="@+id/mapCard"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_bg_base"
-                            android:backgroundTint="#F3E5F5"
-                            android:padding="18dp"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@drawable/map"
-                                app:tint="#9C27B0"
-                                android:contentDescription="Add Hike" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Map"
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="@color/black"
@@ -406,7 +406,7 @@
                     android:weightSum="2"
                     android:baselineAligned="false">
 
-                    <!-- Trail Maps -->
+                    <!-- Add Observation -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -423,7 +423,7 @@
                         app:strokeWidth="0.5dp">
 
                         <LinearLayout
-                            android:id="@+id/trailMapsCard"
+                            android:id="@+id/recordObservationCard"
                             android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -441,15 +441,15 @@
                                 <ImageView
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
-                                    android:src="@drawable/map"
+                                    android:src="@drawable/add_circle_fill"
                                     app:tint="#3F51B5"
-                                    android:contentDescription="Trail Maps" />
+                                    android:contentDescription="Record Observation" />
                             </LinearLayout>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Trail Maps"
+                                android:text="Record Observations"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/black"
@@ -459,12 +459,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Access trail maps and navigation"
+                                android:text="Document wildlife and observations during hikes"
                                 android:textSize="10sp"
                                 android:textColor="#666"
                                 android:layout_marginTop="4dp"
-                                android:lineSpacingExtra="2dp"
-                                android:textAlignment="center" />
+                                android:lineSpacingExtra="2dp" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 

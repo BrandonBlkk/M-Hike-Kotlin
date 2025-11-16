@@ -62,6 +62,11 @@
         <activity
             android:name=".WeatherForecastActivity"
             android:exported="true" />
+
+        <!-- About Screen Activity -->
+        <activity
+            android:name=".AboutScreenActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
