@@ -77,7 +77,7 @@ class HikeListActivity : AppCompatActivity() {
         })
 
         // Advanced search button
-        binding.clearSearchButton.setImageResource(R.drawable.eye_line)
+        binding.clearSearchButton.setImageResource(R.drawable.filter_line)
         binding.clearSearchButton.visibility = View.VISIBLE
         binding.clearSearchButton.setOnClickListener {
             showAdvancedSearchDialog()
@@ -149,7 +149,7 @@ class HikeListActivity : AppCompatActivity() {
                 Log.d(TAG, "No hikes found in database")
             } else {
                 hikes.forEach { hike ->
-                    Log.d(TAG, "Hike: ${hike.name}, ID: ${hike.id}, Location: ${hike.location}")
+                    Log.d(TAG, "Hike: ${hike.name}, ID: ${hike.id}, Location: ${hike.location}, Difficulty: ${hike.difficulty}")
                 }
             }
 
@@ -179,8 +179,20 @@ class HikeListActivity : AppCompatActivity() {
                 val nameMatches = currentSearchQuery.isEmpty() ||
                         hike.name.lowercase().contains(currentSearchQuery.lowercase())
 
+                // Location search (partial match)
+                val locationMatches = currentSearchQuery.isEmpty() ||
+                        hike.location.lowercase().contains(currentSearchQuery.lowercase())
+
+                // Difficulty search (partial match)
+                val difficultyMatches = currentSearchQuery.isEmpty() ||
+                        hike.difficulty.lowercase().contains(currentSearchQuery.lowercase())
+
+                // Combined search for name, location, and difficulty
+                val searchMatches = currentSearchQuery.isEmpty() ||
+                        nameMatches || locationMatches || difficultyMatches
+
                 // Location filter (exact or partial match)
-                val locationMatches = currentLocationFilter.isEmpty() ||
+                val locationFilterMatches = currentLocationFilter.isEmpty() ||
                         hike.location.lowercase().contains(currentLocationFilter.lowercase())
 
                 // Length range filter
@@ -196,7 +208,7 @@ class HikeListActivity : AppCompatActivity() {
                 val dateMatches = currentDateFilter.isEmpty() ||
                         hike.date.contains(currentDateFilter)
 
-                nameMatches && locationMatches && lengthMatches && dateMatches
+                searchMatches && locationFilterMatches && lengthMatches && dateMatches
             }
             filteredHikeList.addAll(filtered)
         }
@@ -328,7 +340,7 @@ class HikeListActivity : AppCompatActivity() {
         val filters = mutableListOf<String>()
 
         if (currentSearchQuery.isNotEmpty()) {
-            filters.add("name containing \"$currentSearchQuery\"")
+            filters.add("name, location, or difficulty containing \"$currentSearchQuery\"")
         }
         if (currentLocationFilter.isNotEmpty()) {
             filters.add("location containing \"$currentLocationFilter\"")
