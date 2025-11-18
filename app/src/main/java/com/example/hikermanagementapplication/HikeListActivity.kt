@@ -47,6 +47,7 @@ class HikeListActivity : AppCompatActivity() {
         setupRecyclerView()
         setupSearchFunctionality()
         setupBottomNavigation()
+        setupClearAllButton()
         loadHikes()
 
         // Set up clear search button from empty state
@@ -84,8 +85,14 @@ class HikeListActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupClearAllButton() {
+        binding.clearAllButton.setOnClickListener {
+            showClearAllConfirmationDialog()
+        }
+    }
+
     private fun setupBottomNavigation() {
-        // Set the My Hikes item as selected
+        // Set the My Hikes selected
         binding.bottomNavigation.selectedItemId = R.id.navMyHike
 
         // Refresh list
@@ -259,6 +266,38 @@ class HikeListActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun showClearAllConfirmationDialog() {
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle("Clear All Data")
+            .setMessage("Are you sure you want to delete ALL hikes and observations? This action cannot be undone!")
+            .setPositiveButton("Delete All") { dialogInterface, i ->
+                clearAllData()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.setOnShowListener {
+            // Red for delete button
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.RED)
+
+            // Blue for cancel button
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.BLUE)
+        }
+
+        dialog.show()
+    }
+
+    private fun clearAllData() {
+        try {
+            dbHelper.resetDatabase()
+            Toast.makeText(this, "All data cleared successfully", Toast.LENGTH_SHORT).show()
+            loadHikes() // Refresh the list to show empty state
+        } catch (e: Exception) {
+            Log.e(TAG, "Error clearing all data", e)
+            Toast.makeText(this, "Error clearing data: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun clearAllFilters() {
