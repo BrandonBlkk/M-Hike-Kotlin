@@ -35,6 +35,8 @@ class AddHikeActivity : AppCompatActivity() {
 
         // Back button
         binding.btnBack.setOnClickListener {
+            val intent = Intent(this, HikeListActivity::class.java)
+            startActivity(intent)
             finish()
         }
 
